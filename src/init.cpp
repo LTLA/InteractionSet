@@ -4,12 +4,8 @@
 extern "C" {
 
 static const R_CallMethodDef all_call_entries[] = {
-    REGISTER(expand_olaps, 7),
-    REGISTER(queryhit_olaps, 7),
-    REGISTER(subjecthit_olaps, 7),
-    REGISTER(expand_paired_olaps, 13),
-    REGISTER(queryhit_paired_olaps, 13),
-    REGISTER(subjecthit_paired_olaps, 13),
+    REGISTER(linear_olaps, 9),
+    REGISTER(paired_olaps, 14),
     REGISTER(expand_pair_links, 12),
     REGISTER(get_box_bounds, 6),
     {NULL, NULL, 0}
