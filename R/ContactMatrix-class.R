@@ -1,27 +1,17 @@
 ##############################################
-# Defines the ContactMatrix class.
-
-setClass("ContactMatrix",
-    contains="Annotated", 
-    slots=list(
-        matrix="Matrix", 
-        anchor1="integer",
-        anchor2="integer",
-        regions="GRanges"
-    )		
-)
+# Setting validity and show methods.
 
 setValidity2("ContactMatrix", function(object) {
-    if (is.unsorted(object@regions)) {
+    if (is.unsorted(regions(object))) {
         return("'regions' should be sorted")
     }
-    msg <- .check_inputs(object@anchor1, object@anchor2, object@regions, same.length=FALSE)
+    msg <- .check_inputs(anchor1(object), anchor2(object), regions(object), same.length=FALSE)
     if (is.character(msg)) { return(msg) }
 
-    if (nrow(object@matrix)!=length(object@anchor1)) { 
+    if (nrow(as.matrix(object))!=length(anchor1(object))) { 
         return("'matrix' nrow must be equal to length of 'anchor1'")
     }
-    if (ncol(object@matrix)!=length(object@anchor2)) {
+    if (ncol(as.matrix(object))!=length(anchor2(object))) {
         return("'matrix' ncol must be equal to length of 'anchor2'")
     }
     return(TRUE)
@@ -29,8 +19,8 @@ setValidity2("ContactMatrix", function(object) {
 
 setMethod("show", signature("ContactMatrix"), function(object) {
     cat("class:", class(object), "\n")
-    cat("dim:", dim(object@matrix), "\n")
-    cat("type:", class(object@matrix), "\n")
+    cat("dim:", dim(as.matrix(object)), "\n")
+    cat("type:", class(as.matrix(object)), "\n")
 
     rnames <- rownames(object)
     if (!is.null(rnames)) scat("rownames(%d): %s\n", rnames)
@@ -45,7 +35,7 @@ setMethod("show", signature("ContactMatrix"), function(object) {
         expt <- character(length(metadata(object)))
     scat("metadata(%d): %s\n", expt)
 
-    cat(sprintf("regions: %i\n", length(object@regions)))
+    cat(sprintf("regions: %i\n", length(regions(object))))
 })
 
 ##############################################
@@ -66,7 +56,6 @@ setMethod("show", signature("ContactMatrix"), function(object) {
         regions=out$regions, metadata=metadata)
 }
 
-setGeneric("ContactMatrix", function(matrix, anchor1, anchor2, regions, ...) standardGeneric("ContactMatrix"))
 setMethod("ContactMatrix", c("ANY", "numeric", "numeric", "GRanges"), 
     function(matrix, anchor1, anchor2, regions, metadata=list()) { 
         .new_ContactMatrix(matrix, anchor1, anchor2, regions, metadata)
@@ -105,12 +94,12 @@ setMethod("ContactMatrix", c("missing", "missing", "missing", "GenomicRangesORmi
 
 setMethod("[", c("ContactMatrix", "ANY", "ANY"), function(x, i, j, ..., drop=TRUE) {
     if (!missing(i)) { 
-        x@anchor1 <- x@anchor1[i]
-        x@matrix <- x@matrix[i,,drop=FALSE]
+        unchecked_anchor1(x) <- anchor1(x)[i]
+        unchecked_matrix(x) <- as.matrix(x)[i,,drop=FALSE]
     }
     if (!missing(j)) {
-        x@anchor2 <- x@anchor2[j]
-        x@matrix <- x@matrix[,j,drop=FALSE]
+        unchecked_anchor2(x) <- anchor2(x)[j]
+        unchecked_matrix(x) <- as.matrix(x)[,j,drop=FALSE]
     }
     return(x)
 }) 
@@ -119,21 +108,30 @@ setMethod("[<-", c("ContactMatrix", "ANY", "ANY", "ContactMatrix"), function(x, 
     if (!identical(regions(value), regions(x))) { 
         stop("replacement and original 'regions' must be identical")
     }
+    
+    a1 <- anchor1(x)
+    a2 <- anchor2(x)
+    m <- as.matrix(x)
+
     if (!missing(i) && !missing(j)) {
-        if (!identical(x@anchor1[i], value@anchor1)) {
+        if (!identical(anchor1(x)[i], anchor1(value))) {
             stop("cannot modify row indices for a subset of columns")
         }
-        if (!identical(x@anchor2[j], value@anchor2)) {
+        if (!identical(anchor2(x)[j], anchor2(value))) {
             stop("cannot modify column indices for a subset of rows")
         }
-        x@matrix[i,j] <- value@matrix
+        m[i,j] <- as.matrix(value)
     } else if (!missing(i)) { 
-        x@anchor1[i] <- value@anchor1
-        x@matrix[i,] <- value@matrix
+        a1[i] <- anchor1(value)
+        m[i,] <- as.matrix(value)
     } else if (!missing(j)) { 
-        x@anchor2[j] <- value@anchor2
-        x@matrix[,j] <- value@matrix
+        a2[j] <- anchor2(value)
+        m[,j] <- as.matrix(value)
     }
+
+    unchecked_anchor1(x) <- a1
+    unchecked_anchor2(x) <- a2
+    unchecked_matrix(x) <- m
     return(x)
 })
 
@@ -153,17 +151,17 @@ setMethod("cbind", "ContactMatrix", function(..., deparse.level=1) {
 
     # Checking if regions are the same; collating if not.
     unified <- .coerce_to_union(all.regions, all.anchor1, all.anchor2)
-    ref@regions <- unified$region
-    ref@anchor1 <- unified$anchor1[[1]]
+    unchecked_regions(ref) <- unified$region
+    unchecked_anchor1(ref) <- unified$anchor1[[1]]
 
     for (x in unified$anchor1[-1]) {
-        if (!identical(ref@anchor1, x)) {
+        if (!identical(anchor1(ref), x)) {
             stop("row anchor indices must be identical for 'cbind'")
         }    
     }
 
-    ref@matrix <- do.call(cbind, lapply(incoming, as.matrix))
-    ref@anchor2 <- unlist(unified$anchor2)
+    unchecked_matrix(ref) <- do.call(cbind, lapply(incoming, as.matrix))
+    unchecked_anchor2(ref) <- unlist(unified$anchor2)
     return(ref)
 })
 
@@ -176,25 +174,25 @@ setMethod("rbind", "ContactMatrix", function(..., deparse.level=1) {
 
     # Checking if regions are the same; collating if not.
     unified <- .coerce_to_union(all.regions, all.anchor1, all.anchor2)
-    ref@regions <- unified$region
-    ref@anchor2 <- unified$anchor2[[1]]
+    unchecked_regions(ref) <- unified$region
+    unchecked_anchor2(ref) <- unified$anchor2[[1]]
 
     for (x in unified$anchor2[-1]) { 
-        if (!identical(ref@anchor2, x)) { 
+        if (!identical(anchor2(ref), x)) { 
             stop("column anchor indices must be identical for 'rbind'")
         }    
     }
     
-    ref@matrix <- do.call(rbind, lapply(incoming, as.matrix))
-    ref@anchor1 <- unlist(unified$anchor1)
+    unchecked_matrix(ref) <- do.call(rbind, lapply(incoming, as.matrix))
+    unchecked_anchor1(ref) <- unlist(unified$anchor1)
     return(ref)
 })
 
 setMethod("t", "ContactMatrix", function(x) { 
-    x@matrix <- t(x@matrix)
-    tmp <- x@anchor1
-    x@anchor1 <- x@anchor2
-    x@anchor2 <- tmp
+    unchecked_matrix(x) <- t(as.matrix(x))
+    tmp <- anchor1(x)
+    unchecked_anchor1(x) <- anchor2(x)
+    unchecked_anchor2(x) <- tmp
     return(x)
 })
 
@@ -215,8 +213,8 @@ setMethod("sort", "ContactMatrix", function(x, decreasing=FALSE, ...) {
 })
 
 setMethod("duplicated", "ContactMatrix", function(x, incomparables=FALSE, ...) {
-    r1 <- duplicated(x@anchor1, incomparables=incomparables, ...)
-    r2 <- duplicated(x@anchor2, incomparables=incomparables, ...)
+    r1 <- duplicated(anchor1(x), incomparables=incomparables, ...)
+    r2 <- duplicated(anchor2(x), incomparables=incomparables, ...)
     return(list(row=r1, column=r2))
 })
 
