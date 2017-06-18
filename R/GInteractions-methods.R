@@ -224,7 +224,7 @@ setMethod("GInteractions", c("numeric", "numeric", "GRanges"),
     return(list(indices=split(refdex, obj.dex), ranges=combined))
 }
 
-setMethod("GInteractions", c("GRanges", "GRanges", "GenomicRangesORmissing"),
+setMethod("GInteractions", c("GRanges", "GRanges", "GenomicRanges_OR_missing"),
     function(anchor1, anchor2, regions, metadata=list(), mode="normal", ...) {
         # Stripping metadata and putting it somewhere else.
         mcol1 <- mcols(anchor1)
@@ -259,7 +259,7 @@ setMethod("GInteractions", c("GRanges", "GRanges", "GenomicRangesORmissing"),
    }
 )
 
-setMethod("GInteractions", c("missing", "missing", "GenomicRangesORmissing"),
+setMethod("GInteractions", c("missing", "missing", "GenomicRanges_OR_missing"),
     function(anchor1, anchor2, regions, metadata=list(), mode="normal", ...) {
         if (missing(regions)) { regions <- GRanges() }
         out <- .new_GInteractions(integer(0), integer(0), regions, metadata, mode=mode)

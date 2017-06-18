@@ -6,8 +6,8 @@
 \alias{ReverseStrictGInteractions-class}
 \alias{GInteractions}
 \alias{GInteractions,numeric,numeric,GRanges-method}
-\alias{GInteractions,GRanges,GRanges,GenomicRangesORmissing-method}
-\alias{GInteractions,missing,missing,GenomicRangesORmissing-method}
+\alias{GInteractions,GRanges,GRanges,GenomicRanges_OR_missing-method}
+\alias{GInteractions,missing,missing,GenomicRanges_OR_missing-method}
 
 \title{GInteractions class and constructors}
 
@@ -19,9 +19,9 @@ Each row of the GInteractions corresponds to a pairwise interaction between two 
 \usage{
 \S4method{GInteractions}{numeric,numeric,GRanges}(anchor1, anchor2, regions, metadata=list(), mode="normal", ...)
 
-\S4method{GInteractions}{GRanges,GRanges,GenomicRangesORmissing}(anchor1, anchor2, regions, metadata=list(), mode="normal", ...)
+\S4method{GInteractions}{GRanges,GRanges,GenomicRanges_OR_missing}(anchor1, anchor2, regions, metadata=list(), mode="normal", ...)
 
-\S4method{GInteractions}{missing,missing,GenomicRangesORmissing}(anchor1, anchor2, regions, metadata=list(), mode="normal", ...)
+\S4method{GInteractions}{missing,missing,GenomicRanges_OR_missing}(anchor1, anchor2, regions, metadata=list(), mode="normal", ...)
 }
 
 \arguments{

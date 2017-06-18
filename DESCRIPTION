@@ -1,11 +1,11 @@
 Package: InteractionSet
-Version: 1.5.2
+Version: 1.5.3
 Date: 2017-05-11
 Title: Base Classes for Storing Genomic Interaction Data
 Author: Aaron Lun <alun@wehi.edu.au>, Malcolm Perry <mgperry32@gmail.com>,
         Liz Ing-Simmons <liz.ing-simmons12@csc.mrc.ac.uk> 
 Maintainer: Aaron Lun <alun@wehi.edu.au>
-Depends: R (>= 3.4), GenomicRanges, SummarizedExperiment (>= 1.1.6)
+Depends: R (>= 3.4), GenomicRanges (>= 1.29.6), SummarizedExperiment (>= 1.1.6)
 Imports: IRanges, S4Vectors (>= 0.13.13), GenomeInfoDb, BiocGenerics, 
         methods, Matrix
 Suggests: testthat, knitr, rmarkdown, BiocStyle
