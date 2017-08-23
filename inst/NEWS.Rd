@@ -11,6 +11,8 @@
 Changed default fill for InteractionSet to missing.
 
 \item Separated subsetting and combining documentation into two different pages. 
+
+\item Added convenience wrappers for resize(), narrow() and shift() on the GenomicRanges slot in all objects.
 }}
 
 \section{Version 1.4.0}{\itemize{
