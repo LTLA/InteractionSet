@@ -45,10 +45,11 @@ setMethod("pcompare",  c("GInteractions", "GInteractions"), function(x, y) {
     if (length(regions(x))!=length(regions(y)) || any(regions(x)!=regions(y))) { 
         stop("'regions' must be identical for arguments to 'pcompare'")
     }
-    output <- anchor1(x) - anchor1(y)
-    tied1 <- output==0L
-    output[tied1] <- anchor2(x)[tied1] - anchor2(y)[tied1]
-    return(output)
+    output1 <- anchor1(x) - anchor1(y)
+    output2 <- anchor2(x) - anchor2(y) # explicitly formed for proper recycling.
+    tied1 <- output1==0L
+    output1[tied1] <- output2[tied1]
+    return(output1)
 })
 
 .strict_check <- function(x, y) {
