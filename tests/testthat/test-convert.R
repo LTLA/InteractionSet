@@ -34,7 +34,7 @@ ref.fun <- function(x, rows, cols, fill, ass=1, sam=1, swap=TRUE) {
 
 ##########################################
 
-test_that("Conversion with integers works", {
+test_that("Inflation with integers works", {
     chosen.rows <- 1:10
     chosen.cols <- 11:15
     out <- inflate(x, chosen.rows, chosen.cols)
@@ -107,7 +107,7 @@ test_that("Conversion with integers works", {
 
 ##########################################
 
-test_that("Conversion with logical vectors works", {
+test_that("Inflation with logical vectors works", {
     chosen.rows <- chosen.cols <- logical(length(regions(x)))
     old.rows <- 1:10
     old.cols <- 11:15
@@ -122,7 +122,7 @@ test_that("Conversion with logical vectors works", {
     expect_identical(out, out.old)
 })
 
-test_that("Conversion with character vectors works", {
+test_that("Inflation with character vectors works", {
     out <- inflate(x, "chrA", "chrA")
     chosen.rows <- which(seqnames(regions(out))=="chrA")
     chosen.cols <- which(seqnames(regions(out))=="chrA")
@@ -154,7 +154,7 @@ test_that("Conversion with character vectors works", {
 
 ##########################################
 
-test_that("Conversion with GRanges works", {
+test_that("Inflation with GRanges works", {
     of.interest <- GRanges(c("chrA", "chrB"), IRanges(c(1, 10), c(20, 50)))
     
     out <- inflate(x, of.interest, of.interest)
@@ -186,7 +186,7 @@ test_that("Conversion with GRanges works", {
     expect_identical(inflate(x, all.chr[1], all.chr[2]), inflate(x, "chrA", "chrB"))
 })
 
-test_that("Conversion with NULL works", {
+test_that("Inflation with NULL works", {
     all.regs <- seq_along(regions(x))
     out <- inflate(x, all.regs, all.regs)
     expect_identical(out, inflate(x, NULL, NULL))
