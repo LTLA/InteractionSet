@@ -24,9 +24,13 @@
     }
 }
 
-setMethod("inflate", "GInteractions", function(x, rows, columns, fill, swap=TRUE, sparse=FALSE, ...) {
+setMethod("inflate", "GInteractions", function(x, rows, columns, fill=NULL, swap=TRUE, sparse=FALSE, ...) {
     row.chosen <- .make_to_indices(regions(x), rows, ...)
     col.chosen <- .make_to_indices(regions(x), columns, ...)
+    if (is.null(fill)) { 
+        fill <- TRUE
+        sparse <- TRUE
+    }
     fill <- rep(fill, length.out=length(x))
      
     # Removing duplicated rows and resorting (we'll put them back in later)
@@ -62,13 +66,15 @@ setMethod("inflate", "GInteractions", function(x, rows, columns, fill, swap=TRUE
     relevantB <- !is.na(ar2) & !is.na(ac1)
 
     if (!sparse) { 
-        out.mat <- Matrix(as(NA, typeof(fill)), nR, nC)
-        if (any(relevantA)) { out.mat[(ac2[relevantA] - 1L) * nR + ar1[relevantA]] <- fill[relevantA] } # Preserve class as dsyMatrix if empty.
+        out.mat <- matrix(as(NA, typeof(fill)), nR, nC)
+        out.mat[(ac2[relevantA] - 1L) * nR + ar1[relevantA]] <- fill[relevantA] 
     } else {
-        out.mat <- sparseMatrix(i=ar1[relevantA], j=ac2[relevantA], 
+        out.mat <- sparseMatrix(i=ar1[relevantA], j=ac2[relevantA],
                                 x=fill[relevantA], dims=c(nR, nC))
     }
-    if (swap && any(relevantB)) { out.mat[(ac1[relevantB] - 1L) * nR + ar2[relevantB]] <- fill[relevantB] }
+    if (swap) { # Swapping anchors.
+        out.mat[(ac1[relevantB] - 1L) * nR + ar2[relevantB]] <- fill[relevantB] 
+    }
 
     # Restoring the original order.
     original.rows <- cumsum(rnd)
@@ -80,8 +86,8 @@ setMethod("inflate", "GInteractions", function(x, rows, columns, fill, swap=TRUE
                 row.chosen[original.rows], col.chosen[original.cols], regions(x)))
 })
  
-setMethod("inflate", "InteractionSet", function(x, rows, columns, assay=1, sample=1, fill=NULL, swap=TRUE, sparse=FALSE, ...) {
-    if (length(fill)==0L) { fill <- assay(x, assay)[,sample] }
+setMethod("inflate", "InteractionSet", function(x, rows, columns, assay=1, sample=1, fill, swap=TRUE, sparse=FALSE, ...) {
+    if (missing(fill)) { fill <- assay(x, assay)[,sample] }
     inflate(interactions(x), rows, columns, fill=fill, swap=swap, sparse=sparse, ...)
 })
 

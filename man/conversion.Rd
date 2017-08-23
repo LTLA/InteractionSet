@@ -13,9 +13,9 @@ Inflate a GInteractions or InteractionSet into a ContactMatrix, or deflate a Con
 }
 
 \usage{
-\S4method{inflate}{GInteractions}(x, rows, columns, fill, swap=TRUE, sparse=FALSE, ...)
+\S4method{inflate}{GInteractions}(x, rows, columns, fill=NULL, swap=TRUE, sparse=FALSE, ...)
 
-\S4method{inflate}{InteractionSet}(x, rows, columns, assay=1L, sample=1L, fill=NULL, swap=TRUE, sparse=FALSE, ...)
+\S4method{inflate}{InteractionSet}(x, rows, columns, assay=1L, sample=1L, fill, swap=TRUE, sparse=FALSE, ...)
 
 \S4method{deflate}{ContactMatrix}(x, collapse=TRUE, extract, use.zero, use.na, ...)
 }
@@ -97,12 +97,15 @@ However, if \code{swap=FALSE}, filling is performed so that the first and second
 This may be preferable if the order of the anchors contains some relevant information. 
 In all cases, if duplicated interactions are present in \code{x} (and redundant permutations, when \code{swap=TRUE}), one will be arbitrarily chosen to fill the matrix.
  
-For the InteractionSet \code{inflate} method, entries in the matrix are filled in based on the values in the first sample of the first assay by default.
+For the InteractionSet \code{inflate} method, entries in the matrix are filled in based on the values in the first sample of the first assay when \code{fill} is missing.
 For more complex \code{x}, values from different assays and samples can be extracted using the \code{assay} and \code{sample} arguments.
 Note that if \code{fill} is specified, it will override any extraction of values from the assays.
 
 If \code{sparse=TRUE}, \code{inflate} will return a ContactMatrix containing a sparseMatrix in the \code{matrix} slot.
 Here, entries without a corresponding interaction in \code{x} are set to zero, not \code{NA}.
+
+If \code{fill=NULL}, it is set to \code{TRUE} by default, with \code{swap} also changed to \code{FALSE} and \code{sparse} changed to \code{TRUE}.
+This has the effect of producing a logical sparse matrix in the output ContactMatrix, indicating which pairs of regions were present in \code{x}.
 }
 
 \section{Deflating from a ContactMatrix}{
@@ -135,7 +138,7 @@ However, in other cases, it is not appropriate to fill entries corresponding to 
 If \code{fill} represents, e.g., log-fold changes, then setting missing entries to a value of zero will be misleading.
 One could simply ignore zeroes altogether, though this will also discard entries that are genuinely zero. 
 
-These problems are largely avoided with the default denseMatrix classes, where missing entries are simply set to \code{NA}.
+These problems are largely avoided with the default dense matrices, where missing entries are simply set to \code{NA}.
 }
 
 \examples{

@@ -1,4 +1,5 @@
 # This tests the conversion functions of an InteractionSet object.
+# library(InteractionSet); library(testthat); source("test-convert.R") 
 
 set.seed(6000)
 N <- 30
@@ -16,21 +17,12 @@ offs <- matrix(rnorm(Np*Nlibs), ncol=Nlibs)
 x <- InteractionSet(list(counts, offs), GInteractions(all.anchor1, all.anchor2, all.regions))
 
 ##########################################
-# Standard construction with integers:
+# Slow and steady implementation of the coercion function.
 
-chosen.rows <- 1:10
-chosen.cols <- 11:15
-out <- inflate(x, chosen.rows, chosen.cols)
-expect_identical(regions(out), regions(x))
-expect_identical(anchors(out, type="row"), regions(x)[chosen.rows])
-expect_identical(anchors(out, type="column"), regions(x)[chosen.cols])
-expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
-expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
-
-ref.fun <- function(x, rows, cols, fill, ass=1, sam=1, swap=TRUE) { # Slow and steady implementation.
+ref.fun <- function(x, rows, cols, fill, ass=1, sam=1, swap=TRUE) { 
     all.anchors <- anchors(x, id=TRUE)
     if (missing(fill)) { fill <- assay(x, ass)[,sam] }
-    ref <- Matrix::Matrix(as(NA, typeof(fill)), length(rows), length(cols))
+    ref <- matrix(as(NA, typeof(fill)), length(rows), length(cols))
     for (i in seq_len(nrow(x))){ 
         a1 <- all.anchors$first[i]
         a2 <- all.anchors$second[i]
@@ -40,204 +32,238 @@ ref.fun <- function(x, rows, cols, fill, ass=1, sam=1, swap=TRUE) { # Slow and s
     return(ref)
 }
 
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
-out <- inflate(x, chosen.rows, chosen.cols, assay=2)
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols, ass=2))
-out <- inflate(x, chosen.rows, chosen.cols, sample=4)
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols, sam=4))
-blah <- runif(Np)
-out <- inflate(x, chosen.rows, chosen.cols, fill=blah)
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols, fill=blah))
+##########################################
 
-out2 <- inflate(x, chosen.rows, chosen.cols, fill=blah, sparse=TRUE) # Trying out a sparse matrix.
-expect_is(as.matrix(out2), "dgCMatrix")
-expect_equal(dim(out), dim(out2))
-ref <- as.matrix(out)
-not.missing <- Matrix::which(!is.na(ref))
-expect_equal(as.matrix(out2)[not.missing], ref[not.missing])
-expect_true(all(as.matrix(as.matrix(out2))[!not.missing]==0))
+test_that("Conversion with integers works", {
+    chosen.rows <- 1:10
+    chosen.cols <- 11:15
+    out <- inflate(x, chosen.rows, chosen.cols)
+    expect_identical(regions(out), regions(x))
+    expect_identical(anchors(out, type="row"), regions(x)[chosen.rows])
+    expect_identical(anchors(out, type="column"), regions(x)[chosen.cols])
+    expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
+    expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
+    
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
+    out <- inflate(x, chosen.rows, chosen.cols, assay=2)
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols, ass=2))
+    out <- inflate(x, chosen.rows, chosen.cols, sample=4)
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols, sam=4))
 
-# Dealing with duplication and resorting:
-chosen.rows <- c(1:10, 1:10)
-chosen.cols <- c(11:15, 11:15)
-out <- inflate(x, chosen.rows, chosen.cols)
-expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
-expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
+    blah <- runif(Np)
+    out <- inflate(x, chosen.rows, chosen.cols, fill=blah)
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols, fill=blah))
+    
+    # Disabling swapping.
+    out.nswp <- inflate(x, chosen.rows, chosen.cols, fill=blah, swap=FALSE)
+    ref.nswp <- ref.fun(x, chosen.rows, chosen.cols, fill=blah, swap=FALSE)
+    expect_equal(as.matrix(out.nswp), ref.nswp)
+    
+    # Trying out a sparse matrix.
+    out2 <- inflate(x, chosen.rows, chosen.cols, fill=blah, sparse=TRUE) 
+    expect_is(as.matrix(out2), "dgCMatrix")
+    expect_equal(dim(out), dim(out2))
+    ref <- as.matrix(out)
+    not.missing <- Matrix::which(!is.na(ref))
+    expect_equal(as.matrix(out2)[not.missing], ref[not.missing])
+    expect_true(all(as.matrix(as.matrix(out2))[!not.missing]==0))
 
-chosen.rows <- as.integer(c(1,3,2,6,7,9,2,2,1))
-chosen.cols <- as.integer(c(11,16,2,2,5))
-out <- inflate(x, chosen.rows, chosen.cols)
-expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
-expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
-
-out2 <- inflate(x, chosen.rows, chosen.cols, sparse=TRUE) # Trying out a sparse matrix, again.
-expect_is(as.matrix(out2), "dgCMatrix")
-expect_equal(dim(out), dim(out2))
-ref <- as.matrix(out)
-not.missing <- Matrix::which(!is.na(ref))
-expect_equal(as.matrix(out2)[not.missing], ref[not.missing])
-expect_true(all(as.matrix(as.matrix(out2))[!not.missing]==0))
-
-# What happens with silly inputs?
-expect_true(nrow(inflate(x, integer(0), 1:10))==0L)
-expect_true(ncol(inflate(x, 1:5, integer(0)))==0L)
-expect_error(inflate(x, 0, 1:10), "positive integer")
-expect_error(inflate(x, as.numeric(NA), 1:10), "positive integer")
-expect_error(inflate(x, 10000, 1:10), "positive integer")
+    # Supplying NULL fill.
+    outx <- inflate(x, chosen.rows, chosen.cols, fill=NULL) 
+    refx <- inflate(x, chosen.rows, chosen.cols, fill=1, sparse=TRUE) 
+    expect_identical(anchors(outx), anchors(refx))
+    expect_identical(as.matrix(outx), as.matrix(refx)!=0)
+    
+    # Dealing with duplication and resorting:
+    chosen.rows <- c(1:10, 1:10)
+    chosen.cols <- c(11:15, 11:15)
+    out <- inflate(x, chosen.rows, chosen.cols)
+    expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
+    expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
+    
+    chosen.rows <- as.integer(c(1,3,2,6,7,9,2,2,1))
+    chosen.cols <- as.integer(c(11,16,2,2,5))
+    out <- inflate(x, chosen.rows, chosen.cols)
+    expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
+    expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
+    
+    out2 <- inflate(x, chosen.rows, chosen.cols, sparse=TRUE) # Trying out a sparse matrix, again.
+    expect_is(as.matrix(out2), "dgCMatrix")
+    expect_equal(dim(out), dim(out2))
+    ref <- as.matrix(out)
+    not.missing <- Matrix::which(!is.na(ref))
+    expect_equal(as.matrix(out2)[not.missing], ref[not.missing])
+    expect_true(all(as.matrix(as.matrix(out2))[!not.missing]==0))
+    
+    # What happens with silly inputs?
+    expect_true(nrow(inflate(x, integer(0), 1:10))==0L)
+    expect_true(ncol(inflate(x, 1:5, integer(0)))==0L)
+    expect_error(inflate(x, 0, 1:10), "positive integer")
+    expect_error(inflate(x, as.numeric(NA), 1:10), "positive integer")
+    expect_error(inflate(x, 10000, 1:10), "positive integer")
+})
 
 ##########################################
-# Construction with logical vectors.
 
-chosen.rows <- chosen.cols <- logical(length(regions(x)))
-old.rows <- 1:10
-old.cols <- 11:15
-chosen.rows[old.rows] <- TRUE
-chosen.cols[old.cols] <- TRUE
-out.old <- inflate(x, old.rows, old.cols)
-out <- inflate(x, chosen.rows, chosen.cols)
-expect_identical(out, out.old)
+test_that("Conversion with logical vectors works", {
+    chosen.rows <- chosen.cols <- logical(length(regions(x)))
+    old.rows <- 1:10
+    old.cols <- 11:15
+    chosen.rows[old.rows] <- TRUE
+    chosen.cols[old.cols] <- TRUE
+    out.old <- inflate(x, old.rows, old.cols)
+    out <- inflate(x, chosen.rows, chosen.cols)
+    expect_identical(out, out.old)
+    
+    out.old <- inflate(x, old.rows, old.cols, sparse=TRUE)
+    out <- inflate(x, chosen.rows, chosen.cols, sparse=TRUE)
+    expect_identical(out, out.old)
+})
 
-out.old <- inflate(x, old.rows, old.cols, sparse=TRUE)
-out <- inflate(x, chosen.rows, chosen.cols, sparse=TRUE)
-expect_identical(out, out.old)
-
-
-##########################################
-# Construction with character vectors.
-
-out <- inflate(x, "chrA", "chrA")
-chosen.rows <- which(seqnames(regions(out))=="chrA")
-chosen.cols <- which(seqnames(regions(out))=="chrA")
-expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
-expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
-
-out <- inflate(x, chosen.rows, chosen.cols, fill=blah, swap=FALSE) # Symmetric space, so there's guaranteed to swapping.
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols, fill=blah, swap=FALSE))
-
-out <- inflate(x, "chrA", "chrB")
-chosen.rows <- which(seqnames(regions(out))=="chrA")
-chosen.cols <- which(seqnames(regions(out))=="chrB")
-expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
-expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
-
-out <- inflate(x, "chrA", c("chrA", "chrB")) # Multiple chromosomes.
-chosen.rows <- which(seqnames(regions(out))=="chrA")
-chosen.cols <- which(seqnames(regions(out)) %in%  c("chrA", "chrB"))
-expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
-expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
-
-expect_true(nrow(inflate(x, "whee", 1:10))==0L)
-expect_true(ncol(inflate(x, 1:5, "whee"))==0L)
-
-##########################################
-# Construction with GRanges.
-
-of.interest <- GRanges(c("chrA", "chrB"), IRanges(c(1, 10), c(20, 50)))
-
-out <- inflate(x, of.interest, of.interest)
-chosen.rows <- chosen.cols <- which(overlapsAny(regions(x), of.interest))
-expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
-expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
-
-out <- inflate(x, of.interest, of.interest, type="within")
-chosen.rows <- chosen.cols <- which(overlapsAny(regions(x), of.interest, type="within"))
-expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
-expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
-
-out <- inflate(x, of.interest[1], of.interest[2], type="within")
-chosen.rows <- which(overlapsAny(regions(x), of.interest[1], type="within"))
-chosen.cols <- which(overlapsAny(regions(x), of.interest[2], type="within"))
-expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
-expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
-expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
-
-expect_true(nrow(inflate(x, GRanges(), 1:10))==0L)
-expect_true(ncol(inflate(x, 1:5, GRanges()))==0L)
-out.of.range <- GRanges("chrC", IRanges(1, 1))
-expect_true(nrow(suppressWarnings(inflate(x, out.of.range, 1:10)))==0L)
-expect_true(ncol(suppressWarnings(inflate(x, 1:5, out.of.range)))==0L)
-
-all.chr <- range(all.regions)
-expect_identical(inflate(x, all.chr[1], all.chr[2]), inflate(x, "chrA", "chrB"))
+test_that("Conversion with character vectors works", {
+    out <- inflate(x, "chrA", "chrA")
+    chosen.rows <- which(seqnames(regions(out))=="chrA")
+    chosen.cols <- which(seqnames(regions(out))=="chrA")
+    expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
+    expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
+    
+    blah <- runif(Np)
+    out <- inflate(x, chosen.rows, chosen.cols, fill=blah, swap=FALSE) # Symmetric space, so there's guaranteed to swapping.
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols, fill=blah, swap=FALSE))
+    
+    out <- inflate(x, "chrA", "chrB")
+    chosen.rows <- which(seqnames(regions(out))=="chrA")
+    chosen.cols <- which(seqnames(regions(out))=="chrB")
+    expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
+    expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
+    
+    out <- inflate(x, "chrA", c("chrA", "chrB")) # Multiple chromosomes.
+    chosen.rows <- which(seqnames(regions(out))=="chrA")
+    chosen.cols <- which(seqnames(regions(out)) %in%  c("chrA", "chrB"))
+    expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
+    expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
+    
+    expect_true(nrow(inflate(x, "whee", 1:10))==0L)
+    expect_true(ncol(inflate(x, 1:5, "whee"))==0L)
+})
 
 ##########################################
-# Construction with NULL.
 
-all.regs <- seq_along(regions(x))
-out <- inflate(x, all.regs, all.regs)
-expect_identical(out, inflate(x, NULL, NULL))
-expect_identical(ref.fun(x, all.regs, all.regs), as.matrix(inflate(x, NULL, NULL)))
+test_that("Conversion with GRanges works", {
+    of.interest <- GRanges(c("chrA", "chrB"), IRanges(c(1, 10), c(20, 50)))
+    
+    out <- inflate(x, of.interest, of.interest)
+    chosen.rows <- chosen.cols <- which(overlapsAny(regions(x), of.interest))
+    expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
+    expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
+    
+    out <- inflate(x, of.interest, of.interest, type="within")
+    chosen.rows <- chosen.cols <- which(overlapsAny(regions(x), of.interest, type="within"))
+    expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
+    expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
+    
+    out <- inflate(x, of.interest[1], of.interest[2], type="within")
+    chosen.rows <- which(overlapsAny(regions(x), of.interest[1], type="within"))
+    chosen.cols <- which(overlapsAny(regions(x), of.interest[2], type="within"))
+    expect_identical(anchors(out, type="row", id=TRUE), chosen.rows)
+    expect_identical(anchors(out, type="column", id=TRUE), chosen.cols)
+    expect_equal(as.matrix(out), ref.fun(x, chosen.rows, chosen.cols))
+    
+    expect_true(nrow(inflate(x, GRanges(), 1:10))==0L)
+    expect_true(ncol(inflate(x, 1:5, GRanges()))==0L)
+    out.of.range <- GRanges("chrC", IRanges(1, 1))
+    expect_true(nrow(suppressWarnings(inflate(x, out.of.range, 1:10)))==0L)
+    expect_true(ncol(suppressWarnings(inflate(x, 1:5, out.of.range)))==0L)
+    
+    all.chr <- range(all.regions)
+    expect_identical(inflate(x, all.chr[1], all.chr[2]), inflate(x, "chrA", "chrB"))
+})
 
-all.regs <- !logical(length(regions(x)))
-out <- inflate(x, all.regs, all.regs)
-expect_identical(out, inflate(x, NULL, NULL))
-
-all.regs <- unique(as.character(seqlevels(regions(x))))
-out <- inflate(x, all.regs, all.regs)
-expect_identical(out, inflate(x, NULL, NULL))
-
-all.regs <- range(regions(x))
-out <- inflate(x, all.regs, all.regs)
-expect_identical(out, inflate(x, NULL, NULL))
+test_that("Conversion with NULL works", {
+    all.regs <- seq_along(regions(x))
+    out <- inflate(x, all.regs, all.regs)
+    expect_identical(out, inflate(x, NULL, NULL))
+    expect_identical(ref.fun(x, all.regs, all.regs), as.matrix(inflate(x, NULL, NULL)))
+    
+    all.regs <- !logical(length(regions(x)))
+    out <- inflate(x, all.regs, all.regs)
+    expect_identical(out, inflate(x, NULL, NULL))
+    
+    all.regs <- unique(as.character(seqlevels(regions(x))))
+    out <- inflate(x, all.regs, all.regs)
+    expect_identical(out, inflate(x, NULL, NULL))
+    
+    all.regs <- range(regions(x))
+    out <- inflate(x, all.regs, all.regs)
+    expect_identical(out, inflate(x, NULL, NULL))
+})
 
 ##########################################
-# Deflation tests
 
-y <- inflate(x, "chrA", "chrA")
-x2 <- deflate(y)
-x2 <- sort(x2)
-keep.x <- subsetByOverlaps(x, GInteractions(all.chr[1], all.chr[1])) 
-keep.x <- sort(swapAnchors(keep.x))
-expect_identical(anchors(x2), anchors(keep.x))
-expect_equal(assay(x2)[,1], assay(keep.x)[,1]) # Not identical, due to coercion to double.
+test_that("Standard deflation methods are working", {
+    y <- inflate(x, "chrA", "chrA")
+    x2 <- deflate(y)
+    x2 <- sort(x2)
+    all.chr <- range(all.regions)
+    keep.x <- subsetByOverlaps(x, GInteractions(all.chr[1], all.chr[1])) 
+    keep.x <- sort(swapAnchors(keep.x))
+    expect_identical(anchors(x2), anchors(keep.x))
+    expect_equal(assay(x2)[,1], assay(keep.x)[,1]) # Not identical, due to coercion to double.
+    
+    # What happens when you turn off uniqueness (in this case, we have symmetry):
+    x2 <- deflate(y, collapse=FALSE)
+    x2 <- sort(x2)
+    not.diag <- anchors(keep.x, type="first", id=TRUE)!=anchors(keep.x, type="second", id=TRUE)
+    keep.x <- rbind(keep.x[not.diag], swapAnchors(keep.x[not.diag], mode='all'), keep.x[!not.diag])
+    keep.x <- sort(keep.x)
+    expect_identical(anchors(x2), anchors(keep.x))
+    expect_equal(assay(x2)[,1], assay(keep.x)[,1])
+    
+    # Behaviour for different index sets:
+    y <- inflate(x, "chrA", "chrB")
+    x2 <- deflate(y)
+    x2 <- sort(x2)
+    keep.x <- subsetByOverlaps(x, GInteractions(all.chr[1], all.chr[2])) 
+    keep.x <- sort(swapAnchors(keep.x))
+    expect_identical(anchors(x2), anchors(keep.x))
+    expect_equal(assay(x2)[,1], assay(keep.x)[,1])
+})
 
-# What happens when you turn off uniqueness (in this case, we have symmetry):
-x2 <- deflate(y, collapse=FALSE)
-x2 <- sort(x2)
-not.diag <- anchors(keep.x, type="first", id=TRUE)!=anchors(keep.x, type="second", id=TRUE)
-keep.x <- rbind(keep.x[not.diag], swapAnchors(keep.x[not.diag], mode='all'), keep.x[!not.diag])
-keep.x <- sort(keep.x)
-expect_identical(anchors(x2), anchors(keep.x))
-expect_equal(assay(x2)[,1], assay(keep.x)[,1])
+test_that("Advanced deflation optionsare working", {
+    # With sparsity:
+    y <- inflate(x, "chrA", "chrA", sparse=TRUE)
+    xref <- inflate(x, "chrA", "chrA")
+    ref <- as.matrix(xref)
+    ref[is.na(ref)] <- 0
+    expect_identical(as.matrix(y), as(ref, "dgCMatrix"))
+    expect_equal(deflate(y), deflate(xref, use.zero=FALSE, use.na=FALSE)) # Getting rid of genuine zeros in there.
+    
+    # Including NAs to be extracted:
+    na.deflated <- deflate(xref, use.na=TRUE)
+    expect_identical(length(na.deflated), sum(seq_len(nrow(ref))))
 
-# Behaviour for different index sets:
-y <- inflate(x, "chrA", "chrB")
-x2 <- deflate(y)
-x2 <- sort(x2)
-keep.x <- subsetByOverlaps(x, GInteractions(all.chr[1], all.chr[2])) 
-keep.x <- sort(swapAnchors(keep.x))
-expect_identical(anchors(x2), anchors(keep.x))
-expect_equal(assay(x2)[,1], assay(keep.x)[,1])
+    # Including zeroes to be extracted:
+    xref2 <- xref
+    as.matrix(xref2) <- ref
+    expect_equal(deflate(y, use.zero=TRUE), deflate(xref2, use.zero=TRUE))
+    
+    # Using explicit extraction.
+    ex <- !is.na(as.matrix(xref))
+    alt <- deflate(xref, use.na=FALSE, use.zero=TRUE)
+    expect_equal(deflate(xref, extract=ex), alt)
+    expect_false(isTRUE(all.equal(alt, deflate(xref, use.na=TRUE)))) # definitely different
+    expect_equal(deflate(xref, extract=ex, use.na=TRUE), alt) # ... but 'ex' overrides it.
 
-# Deflating a sparseMatrix (and other options).
-y <- inflate(x, "chrA", "chrA", sparse=TRUE)
-xref <- inflate(x, "chrA", "chrA")
-ref <- as.matrix(xref)
-ref[is.na(ref)] <- 0
-expect_identical(as.matrix(y), as(ref, "dgCMatrix"))
-expect_equal(deflate(y), deflate(xref, use.zero=FALSE, use.na=FALSE)) # Getting rid of genuine zeros in there.
+    # Trying out some silliness.
+    expect_true(nrow(deflate(ContactMatrix(matrix(0, 4, 0), 1:4, integer(0), all.regions)))==0L)
+    expect_true(nrow(deflate(ContactMatrix(matrix(0, 0, 4), integer(0), 1:4, all.regions)))==0L)
+})
 
-na.deflated <- deflate(xref, use.na=TRUE)
-expect_identical(length(na.deflated), sum(seq_len(nrow(ref))))
-xref2 <- xref
-as.matrix(xref2) <- ref
-expect_equal(deflate(y, use.zero=TRUE), deflate(xref2, use.zero=TRUE))
-
-ex <- !is.na(as.matrix(xref))
-alt <- deflate(xref, use.na=FALSE, use.zero=TRUE)
-expect_equal(deflate(xref, extract=ex), alt)
-expect_false(isTRUE(all.equal(alt, deflate(xref, use.na=TRUE)))) # definitely different
-expect_equal(deflate(xref, extract=ex, use.na=TRUE), alt) # ... but 'ex' overrides it.
-
-# Trying out some silliness.
-
-expect_true(nrow(deflate(ContactMatrix(matrix(0, 4, 0), 1:4, integer(0), all.regions)))==0L)
-expect_true(nrow(deflate(ContactMatrix(matrix(0, 0, 4), integer(0), 1:4, all.regions)))==0L)
 
