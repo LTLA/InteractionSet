@@ -10,9 +10,10 @@
     }
     
     x <- x[keep,]
-    new.ranges <- anchors(x, type="first") 
+    new.range.x <- anchor1(x)
     keep.a1 <- keep.a1[keep]
-    new.ranges[keep.a1] <- anchors(x[keep.a1,], type="second") # Replace anchor1 matches to "ref" with (mostly) non-ref anchor2.
+    new.range.x[keep.a1] <- anchor2(x)[keep.a1] # Replace anchor1 matches to "ref" with (mostly) non-ref anchor2.
+    new.ranges <- regions(x)[new.range.x]
 
     if (internal) {
         keep.a2 <- keep.a2[keep]
