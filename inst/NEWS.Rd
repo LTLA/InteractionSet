@@ -2,10 +2,13 @@
 \title{InteractionSet News}
 \encoding{UTF-8}
 
-\section{Version 1.5.2}{\itemize{
-\item Removed c method for InteractionSet, rbind method for GInteractions.
+\section{Version 1.5.4}{\itemize{
+\item Removed c() method for InteractionSet, rbind method for GInteractions.
 
 \item Generalized ContactMatrix to allow any type of matrix-like object.
+
+\item Supported inflate() for GInteractions without specifying fill.
+Changed default fill for InteractionSet to missing.
 
 \item Separated subsetting and combining documentation into two different pages. 
 }}
