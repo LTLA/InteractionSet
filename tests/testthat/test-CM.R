@@ -60,25 +60,25 @@ regions: %i", Nr, Nc, mattype, N),
 
 # Various common values needed in many individual test chunks. 
 o <- order(all.regions)
-new.regions <- all.regions[o]
+ref.regions <- all.regions[o]
 new.pos <- integer(length(o))
 new.pos[o] <- seq_along(new.pos)
-new.anchor1 <- new.pos[all.anchor1]
-new.anchor2 <- new.pos[all.anchor2]
+ref.anchor1 <- new.pos[all.anchor1]
+ref.anchor2 <- new.pos[all.anchor2]
 
 test_that("slots contain valid data and getters work for CM objects", {
     expect_s4_class(x, "ContactMatrix")
     expect_identical(as.matrix(x), counts)
     expect_true(!is.unsorted(regions(x)))
-    expect_identical(regions(x), new.regions)    
+    expect_identical(regions(x), ref.regions)    
 
-    expect_identical(anchors(x, id=TRUE, type="row"), new.anchor1)
-    expect_identical(anchors(x, id=TRUE, type="column"), new.anchor2)
-    expect_identical(anchors(x, id=TRUE), list(row=new.anchor1, column=new.anchor2))
+    expect_identical(anchors(x, id=TRUE, type="row"), ref.anchor1)
+    expect_identical(anchors(x, id=TRUE, type="column"), ref.anchor2)
+    expect_identical(anchors(x, id=TRUE), list(row=ref.anchor1, column=ref.anchor2))
     
-    expect_identical(anchors(x, type="row"), new.regions[new.anchor1])
-    expect_identical(anchors(x, type="column"), new.regions[new.anchor2])
-    expect_identical(anchors(x), list(row=new.regions[new.anchor1], column=new.regions[new.anchor2]))
+    expect_identical(anchors(x, type="row"), ref.regions[ref.anchor1])
+    expect_identical(anchors(x, type="column"), ref.regions[ref.anchor2])
+    expect_identical(anchors(x), list(row=ref.regions[ref.anchor1], column=ref.regions[ref.anchor2]))
 })
 
 ###################################
@@ -125,11 +125,11 @@ test_that("setters on the anchors are functional for CM objects", {
     expect_error(anchorIds(x) <- list(fresh.anchor1, fresh.anchor1), "ncol must be equal to length of 'anchor2'")
     
     mod.x <- x
-    anchorIds(x, type="row") <- new.anchor1 # Restoring; checking that these calls also work.
-    expect_identical(anchors(x, id=TRUE, type="row"), new.anchor1)
-    anchorIds(x, type="column") <- new.anchor2
-    expect_identical(anchors(x, id=TRUE, type="column"), new.anchor2)
-    anchorIds(mod.x, type="both") <- list(new.anchor1, new.anchor2) # Restoring.
+    anchorIds(x, type="row") <- ref.anchor1 # Restoring; checking that these calls also work.
+    expect_identical(anchors(x, id=TRUE, type="row"), ref.anchor1)
+    anchorIds(x, type="column") <- ref.anchor2
+    expect_identical(anchors(x, id=TRUE, type="column"), ref.anchor2)
+    anchorIds(mod.x, type="both") <- list(ref.anchor1, ref.anchor2) # Restoring.
     expect_identical(x, mod.x)
 })
  
@@ -138,9 +138,9 @@ test_that("setters on the regions are functional for CM objects", {
     shuffled <- sample(100, N, replace=TRUE)
     regions(x)$score <- shuffled
     expect_identical(regions(x)$score, shuffled)
-    expect_false(identical(regions(x), new.regions))
-    regions(x) <- new.regions # Restoring.
-    expect_true(identical(regions(x), new.regions))
+    expect_false(identical(regions(x), ref.regions))
+    regions(x) <- ref.regions # Restoring.
+    expect_true(identical(regions(x), ref.regions))
    
     x.dump <- x
     mod.ranges <- resize(regions(x), fix="center", width=50)
@@ -188,8 +188,8 @@ regions: 30", mattype),
   
     expect_identical(as.matrix(xsub), as.matrix(x)[rchosen,])
     expect_identical(regions(xsub), regions(x))
-    expect_identical(anchors(xsub, type="row"), new.regions[new.anchor1][rchosen])
-    expect_identical(anchors(xsub, type="column"), new.regions[new.anchor2])
+    expect_identical(anchors(xsub, type="row"), ref.regions[ref.anchor1][rchosen])
+    expect_identical(anchors(xsub, type="column"), ref.regions[ref.anchor2])
 
     cchosen <- 10:20
     xsub <- x[,cchosen]
@@ -204,8 +204,8 @@ regions: 30", mattype),
 
     expect_identical(as.matrix(xsub), as.matrix(x)[,cchosen])
     expect_identical(regions(xsub), regions(x))
-    expect_identical(anchors(xsub, type="row"), new.regions[new.anchor1])
-    expect_identical(anchors(xsub, type="column"), new.regions[new.anchor2][cchosen])
+    expect_identical(anchors(xsub, type="row"), ref.regions[ref.anchor1])
+    expect_identical(anchors(xsub, type="column"), ref.regions[ref.anchor2][cchosen])
 
     xsub <- subset(x,rchosen,cchosen)
     expect_output(show(xsub), sprintf("class: ContactMatrix 
@@ -219,8 +219,8 @@ regions: 30", mattype),
 
     expect_identical(as.matrix(xsub), as.matrix(x)[rchosen,cchosen])
     expect_identical(regions(xsub), regions(x))
-    expect_identical(anchors(xsub, type="row"), new.regions[new.anchor1][rchosen])
-    expect_identical(anchors(xsub, type="column"), new.regions[new.anchor2][cchosen])
+    expect_identical(anchors(xsub, type="row"), ref.regions[ref.anchor1][rchosen])
+    expect_identical(anchors(xsub, type="column"), ref.regions[ref.anchor2][cchosen])
 
     expect_identical(nrow(x[0,]), 0L)
     expect_identical(ncol(x[,0]), 0L)
