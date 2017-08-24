@@ -62,9 +62,12 @@
 
 \details{
 The \code{trim}, \code{resize}, \code{narrow} and \code{shift} methods will apply the GenomicRanges methods with the same name to the anchor regions of \code{x}.
-Note that this does \emph{not} refer to the \code{regions} slot of \code{x}.
-For example, \code{resize(x, width)} will produce an object that is equivalent to running \code{resize} on \code{first(x)} and \code{second(x)} directly.
-This is important when the arguments are vectors, as these are assumed to be parallel to the interactions rather than the \code{regions} slot.
+For example, \code{resize(x, width)} will produce an object that is equivalent to running \code{resize} on the first and second anchor regions directly.
+This is \emph{not} the same as running the methods on the \code{regions} slot of \code{x}, which is an important distinction when the arguments are vectors.
+
+The interaction-specific arguments can be scalars, vectors or a list of two scalars/vectors.
+Scalars and vectors will be recycled across the length of the first and second anchor regions.
+For lists, the first element will be applied to the first anchor regions, and the second element will be applied to the second anchor regions.
 
 After any modifications are applied, resorting may be performed to ensure that the entries in the \code{regions} slot of the output object are ordered.
 This means that the order of the ranges in the \code{regions} slot may change between the input and output object.
