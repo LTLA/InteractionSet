@@ -1,6 +1,8 @@
 # getset.R
 
 setGeneric("anchors", function(x, ...) standardGeneric("anchors"))
+setGeneric("anchorIds", function(x, ...) standardGeneric("anchorIds"))
+
 setGeneric("anchor1", function(x) standardGeneric("anchor1"))
 setGeneric("anchor2", function(x) standardGeneric("anchor2"))
 setGeneric("unchecked_anchor1<-", function(x, value) standardGeneric("unchecked_anchor1<-"))
@@ -14,7 +16,6 @@ setGeneric("appendRegions<-", function(x, value) standardGeneric("appendRegions<
 setGeneric("reduceRegions", function(x) standardGeneric("reduceRegions"))
 
 setGeneric("anchorIds<-", function(x, ..., value) standardGeneric("anchorIds<-"))
-setGeneric("anchors<-", function(x, ..., value) standardGeneric("anchors<-"))
 
 setGeneric("interactions", function(x, ...) standardGeneric("interactions"))
 setGeneric("unchecked_interactions<-", function(x, value) standardGeneric("unchecked_interactions<-"))

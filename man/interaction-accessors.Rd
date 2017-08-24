@@ -4,6 +4,11 @@
 \alias{anchors}
 \alias{anchors,InteractionSet-method}
 \alias{anchors,GInteractions-method}
+
+\alias{anchorIds}
+\alias{anchorIds,InteractionSet-method}
+\alias{anchorIds,GInteractions-method}
+
 \alias{first}
 \alias{first,InteractionSet-method}
 \alias{first,GInteractions-method}
@@ -75,26 +80,49 @@ Methods to get and set fields in an InteractionSet or GInteractions object.
 
 \usage{
 \S4method{anchors}{GInteractions}(x, type="both", id=FALSE)
+\S4method{anchors}{InteractionSet}(x, type="both", id=FALSE)
+
+\S4method{anchorIds}{GInteractions}(x, type="both")
+\S4method{anchorIds}{InteractionSet}(x, type="both")
+
 \S4method{first}{GInteractions}(x)
+\S4method{first}{InteractionSet}(x)
+
 \S4method{second}{GInteractions}(x)
+\S4method{second}{InteractionSet}(x)
 
 \S4method{regions}{GInteractions}(x)
+\S4method{regions}{InteractionSet}(x)
+
 \S4method{seqinfo}{GInteractions}(x)
+\S4method{seqinfo}{InteractionSet}(x)
+
 \S4method{show}{GInteractions}(x)
+\S4method{show}{InteractionSet}(x)
 
 \S4method{anchorIds}{GInteractions}(x, type="both") <- value
+\S4method{anchorIds}{InteractionSet}(x, type="both") <- value
+
 \S4method{regions}{GInteractions}(x) <- value
+\S4method{regions}{InteractionSet}(x) <- value
+
 \S4method{seqinfo}{GInteractions}(x) <- value
+\S4method{seqinfo}{InteractionSet}(x) <- value
 
 \S4method{replaceRegions}{GInteractions}(x) <- value
+\S4method{replaceRegions}{InteractionSet}(x) <- value
+
 \S4method{appendRegions}{GInteractions}(x) <- value
+\S4method{appendRegions}{InteractionSet}(x) <- value
+
 \S4method{reduceRegions}{GInteractions}(x)
+\S4method{reduceRegions}{InteractionSet}(x)
 
 \S4method{names}{GInteractions}(x)
-\S4method{names}{GInteractions}(x) <- value
+\S4method{names}{InteractionSet}(x)
 
-## Each above method has an identical equivalent for 
-## InteractionSet objects (not shown here for brevity).
+\S4method{names}{GInteractions}(x) <- value
+\S4method{names}{InteractionSet}(x) <- value
 
 \S4method{anchors}{StrictGInteractions}(x, type="both") <- value
 \S4method{anchors}{ReverseStrictGInteractions}(x, type="both") <- value
@@ -106,6 +134,7 @@ Methods to get and set fields in an InteractionSet or GInteractions object.
 
 \S4method{interactions}{InteractionSet}(x)
 \S4method{interactions}{InteractionSet}(x) <- value
+
 \S4method{mcols}{InteractionSet}(x, use.names=FALSE)
 \S4method{mcols}{InteractionSet}(x) <- value
 }
@@ -145,13 +174,14 @@ Methods to get and set fields in an InteractionSet or GInteractions object.
 \section{Anchor manipulations for GInteractions}{
 The return value of \code{anchors} varies depending on \code{type} and \code{id}:
 \itemize{
-\item If \code{id=FALSE}, a GRanges object will be returned containing the regions specified by the \code{anchor1} or \code{anchor2} slots in \code{x}, 
+\item If \code{id=FALSE}, a GRanges object is returned containing the regions specified by the \code{anchor1} or \code{anchor2} slots in \code{x}, 
     for \code{type=="first"} or \code{"second"}, respectively.
 The \code{first} and \code{second} methods are synonyms for \code{anchors} in these respective cases.
-\item If \code{id=FALSE} and \code{type="both"}, a GRangesList will be returned with two entries \code{first} and \code{second}, containing regions specified by \code{anchor1} and \code{anchor2} respectively.
+\item If \code{id=FALSE} and \code{type="both"}, a list is returned with two entries \code{first} and \code{second}, containing regions specified by \code{anchor1} and \code{anchor2} respectively.
 \item If \code{id=TRUE} and \code{type="both"}, a list is returned containing the two integer vectors in the \code{anchor1} or \code{anchor2} slots of \code{x}.
 Otherwise, each vector is returned corresponding to the requested value of \code{type}.
 }
+Note that \code{anchorIds} is the same as calling \code{anchors} with \code{id=TRUE}.
 
 Replacement in \code{anchorIds<-} requires anchor indices rather than a GRanges object. 
 If \code{type="both"}, a list of two integer vectors is required in \code{value}, specifying the indices of the interacting regions in \code{regions(x)}.
@@ -222,7 +252,7 @@ However, the \code{metadata} getter and setter will operate on the SummarizedExp
 }
 
 \value{
-For the getters, values in various slots of \code{x} are returned, while for the setters, the slots of \code{x} are modified accordingly -- see below for more details.
+For the getters, values in various slots of \code{x} are returned, while for the setters, the slots of \code{x} are modified accordingly -- see Details.
 }
 
 \examples{

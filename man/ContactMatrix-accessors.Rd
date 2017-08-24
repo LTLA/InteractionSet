@@ -2,6 +2,7 @@
 \alias{ContactMatrix-access}
 
 \alias{anchors,ContactMatrix-method}
+\alias{anchorIds,ContactMatrix-method}
 \alias{anchors<-,ContactMatrix-method}
 \alias{anchorIds<-,ContactMatrix-method}
 
@@ -33,6 +34,7 @@ Methods to get and set fields in an ContactMatrix object.
 
 \usage{
 \S4method{anchors}{ContactMatrix}(x, type="both", id=FALSE)
+\S4method{anchorIds}{ContactMatrix}(x, type="both")
 \S4method{anchorIds}{ContactMatrix}(x, type="both") <- value
 
 \S4method{regions}{ContactMatrix}(x)
@@ -78,12 +80,13 @@ Methods to get and set fields in an ContactMatrix object.
 \details{
 The return value of \code{anchors} varies depending on \code{type} and \code{id}:
 \itemize{
-\item If \code{id=FALSE}, a GRanges object will be returned containing the regions specified by the \code{anchor1} or \code{anchor2} slots in \code{x}, 
+\item If \code{id=FALSE}, a GRanges object is returned containing the regions specified by the \code{anchor1} or \code{anchor2} slots in \code{x}, 
     for \code{type=="row"} or \code{"column"}, respectively.
-\item If \code{id=FALSE} and \code{type="both"}, a GRangesList will be returned with two entries \code{row} and \code{column}, containing regions specified by \code{anchor1} and \code{anchor2} respectively.
+\item If \code{id=FALSE} and \code{type="both"}, a list is returned with two entries \code{row} and \code{column}, containing regions specified by \code{anchor1} and \code{anchor2} respectively.
 \item If \code{id=TRUE}, the integer vectors in the \code{anchor1} or \code{anchor2} slots of \code{x} are returned directly, depending on \code{type}. 
     A list of length two is returned for \code{type="both"}, containing both of these vectors.
 }
+Note that \code{anchorIds} is equivalent to calling \code{anchors} with \code{id=TRUE}.
 
 Replacement in \code{anchorIds<-} can only be performed using anchor indices.
 If \code{type="both"}, a list of two integer vectors is required in \code{value}, specifying the indices of the row- and column-wise interacting regions in \code{x}.

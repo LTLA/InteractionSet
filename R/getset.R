@@ -43,63 +43,82 @@ setReplaceMethod("unchecked_matrix", "ContactMatrix", function(x, value) {
 }) 
 
 ###############################################################
-# Exported getters for anchors. Using a generating function, 
-# to capture differences in 'type' for 'anchors' call.
+# Exported getters for anchors. 
 
-GI.args <- c("both", "first", "second") 
-CM.args <- c("both", "row", "column") 
-anchor.fun.gen <- function(is.GI) { 
-    if (is.GI) { 
-        type.arg <- GI.args
-        n1fun <- n2fun <- names
+setMethod("anchorIds", "GInteractions", function(x, type="both") {
+    type <- match.arg(type, c("both", "first", "second"))
+    if (type=="both") {
+        out <- list(first=anchor1(x), second=anchor2(x))
+        names(out$first) <- names(out$second) <- names(x)
+    } else if (type=="first") {
+        out <- anchor1(x)
+        names(out) <- names(x)
     } else {
-        type.arg <- CM.args
-        n1fun <- rownames
-        n2fun <- colnames
+        out <- anchor2(x)
+        names(out) <- names(x)
     }
-    out.names <- type.arg[2:3]
-    type1 <- out.names[1]
+    return(out)
+}) 
 
-    function(x, type="both", id=FALSE) {
-        type <- match.arg(type, type.arg)
-        if (id) {
-            if (type=="both") {
-                out <- list(anchor1(x), anchor2(x))
-                names(out[[1]]) <- n1fun(x) 
-                names(out[[2]]) <- n2fun(x)
-                names(out) <- out.names
-            } else if (type==type1) {
-                out <- anchor1(x)
-                names(out) <- n1fun(x)
-            } else {
-                out <- anchor2(x)
-                names(out) <- n2fun(x)
-            }
-        } else {
-            if (type=="both") {
-                out <- GRangesList(regions(x)[anchor1(x)], regions(x)[anchor2(x)])
-                names(out[[1]]) <- n1fun(x)
-                names(out[[2]]) <- n2fun(x)
-                names(out) <- out.names
-            } else if (type==type1) {
-                out <- regions(x)[anchor1(x)]
-                names(out) <- n1fun(x)
-            } else {
-                out <- regions(x)[anchor2(x)]
-                names(out) <- n2fun(x)
-            }
-        }
-        return(out)
+setMethod("anchors", "GInteractions", function(x, type="both", id=FALSE) {
+    if (id) { 
+        return(anchorIds(x, type=type)) 
     }
-}
 
-# Defining the methods:
-setMethod("anchors", "GInteractions", anchor.fun.gen(TRUE))
-setMethod("anchors", "ContactMatrix", anchor.fun.gen(FALSE))
+    type <- match.arg(type, c("both", "first", "second"))
+    if (type=="both") {
+        out <- list(first=regions(x)[anchor1(x)], second=regions(x)[anchor2(x)])
+        names(out$first) <- names(out$second) <- names(x)
+    } else if (type=="first") {
+        out <- regions(x)[anchor1(x)]
+        names(out) <- names(x)
+    } else {
+        out <- regions(x)[anchor2(x)]
+        names(out) <- names(x)
+    }
+    return(out)
+})
 
-# Defining some convenience methods for GInteractions.
+# Defining some convenience methods.
 setMethod("first", "GInteractions", function(x) { anchors(x, type="first") })
 setMethod("second", "GInteractions", function(x) { anchors(x, type="second") })
+
+# Same again for ContactMatrix objects.
+setMethod("anchorIds", "ContactMatrix", function(x, type="both") {
+    type <- match.arg(type, c("both", "row", "column"))
+    if (type=="both") {
+        out <- list(row=anchor1(x), column=anchor2(x))
+        names(out$row) <- rownames(x)
+        names(out$column) <- colnames(x)
+    } else if (type=="row") {
+        out <- anchor1(x)
+        names(out) <- rownames(x)
+    } else {
+        out <- anchor2(x)
+        names(out) <- colnames(x)
+    }
+    return(out)
+}) 
+
+setMethod("anchors", "ContactMatrix", function(x, type="both", id=FALSE) {
+    if (id) { 
+        return(anchorIds(x, type=type)) 
+    }
+
+    type <- match.arg(type, c("both", "row", "column"))
+    if (type=="both") {
+        out <- list(row=regions(x)[anchor1(x)], column=regions(x)[anchor2(x)])
+        names(out$row) <- rownames(x)
+        names(out$column) <- colnames(x)
+    } else if (type=="row") {
+        out <- regions(x)[anchor1(x)]
+        names(out) <- rownames(x)
+    } else {
+        out <- regions(x)[anchor2(x)]
+        names(out) <- colnames(x)
+    }
+    return(out)
+})
 
 ###############################################################
 # Setters for regions:
@@ -168,36 +187,43 @@ for (siglist in c("GInteractions", "ContactMatrix")) {
 ###############################################################
 # Setters for anchors.
 
-anchor.repfun.gen <- function(is.GI) { 
-    if (is.GI) { 
-        type.arg <- GI.args
-    } else {
-        type.arg <- CM.args
-    }
-    type1 <- type.arg[2]
-
-    function(x, type="both", ..., value) {
-        type <- match.arg(type, type.arg)
-        if (type=="both") { 
-            if (length(value)!=2L) { 
-                stop("'value' must be a list of 2 numeric vectors")
-            }
-            unchecked_anchor1(x) <- as.integer(value[[1]])
-            unchecked_anchor2(x) <- as.integer(value[[2]])
-        } else if (type==type1) {
-            unchecked_anchor1(x) <- as.integer(value)
-        } else {
-            unchecked_anchor2(x) <- as.integer(value)
+setReplaceMethod("anchorIds", "GInteractions", function(x, type="both", ..., value) {
+    type <- match.arg(type, c("both", "first", "second"))
+    if (type=="both") { 
+        if (length(value)!=2L) { 
+            stop("'value' must be a list of 2 numeric vectors")
         }
-
-        validObject(x)
-        return(x)
+        unchecked_anchor1(x) <- as.integer(value[[1]])
+        unchecked_anchor2(x) <- as.integer(value[[2]])
+    } else if (type=="first") {
+        unchecked_anchor1(x) <- as.integer(value)
+    } else {
+        unchecked_anchor2(x) <- as.integer(value)
     }
-}
 
-setReplaceMethod("anchorIds", "GInteractions", anchor.repfun.gen(TRUE))
-setReplaceMethod("anchorIds", "ContactMatrix", anchor.repfun.gen(FALSE))
+    validObject(x)
+    return(x)
+})
 
+setReplaceMethod("anchorIds", "ContactMatrix", function(x, type="both", ..., value) {
+    type <- match.arg(type, c("both", "row", "column"))
+    if (type=="both") { 
+        if (length(value)!=2L) { 
+            stop("'value' must be a list of 2 numeric vectors")
+        }
+        unchecked_anchor1(x) <- as.integer(value[[1]])
+        unchecked_anchor2(x) <- as.integer(value[[2]])
+    } else if (type=="row") {
+        unchecked_anchor1(x) <- as.integer(value)
+    } else {
+        unchecked_anchor2(x) <- as.integer(value)
+    }
+
+    validObject(x)
+    return(x)
+})
+
+# Specialist methods for enforced classes.
 setReplaceMethod("anchorIds", "StrictGInteractions", function(x, type="both", ..., value) {
     x <- as(x, "GInteractions")
     anchorIds(x, type=type, ...) <- value
@@ -351,18 +377,6 @@ setReplaceMethod("seqinfo", "InteractionSet", function(x, value) {
     unchecked_interactions(x) <- i
     return(x)
 })
-
-###############################################################
-# Deprecation of anchors<- setter, use anchorIds<- instead
-# (to avoid confusion with anchors(x), which returns GRanges by default).
-
-for (siglist in c("GInteractions", "InteractionSet", "ContactMatrix")) { 
-    setReplaceMethod("anchors", siglist, function(x, type="both", ..., value) {
-        .Deprecated("anchorIds<-", old="anchors<-")    
-        anchorIds(x, type=type, ...) <- value
-        return(x)
-    })
-}
 
 ##############################################
 # Matrix dimensions

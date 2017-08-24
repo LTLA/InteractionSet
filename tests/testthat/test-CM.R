@@ -78,7 +78,7 @@ test_that("slots contain valid data and getters work for CM objects", {
     
     expect_identical(anchors(x, type="row"), new.regions[new.anchor1])
     expect_identical(anchors(x, type="column"), new.regions[new.anchor2])
-    expect_identical(anchors(x), GRangesList(row=new.regions[new.anchor1], column=new.regions[new.anchor2]))
+    expect_identical(anchors(x), list(row=new.regions[new.anchor1], column=new.regions[new.anchor2]))
 })
 
 ###################################

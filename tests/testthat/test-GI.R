@@ -48,7 +48,7 @@ expect_identical(anchors(x, id=TRUE), list(first=new.anchor1, second=new.anchor2
 
 expect_identical(anchors(x, type="first"), new.regions[new.anchor1])
 expect_identical(anchors(x, type="second"), new.regions[new.anchor2])
-expect_identical(anchors(x), GRangesList(first=new.regions[new.anchor1], second=new.regions[new.anchor2]))
+expect_identical(anchors(x), list(first=new.regions[new.anchor1], second=new.regions[new.anchor2]))
 expect_identical(anchors(x, type="first"), first(x))
 expect_identical(anchors(x, type="second"), second(x))
 
