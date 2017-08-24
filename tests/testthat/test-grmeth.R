@@ -36,28 +36,63 @@ test_that("trimming works for all objects", {
     expect_identical(anchors(y2, type="column"), ref[anchors(y, type="column", id=TRUE)])
 })
 
-test_that("resizing works for all objects", {
-    new.size <- round(runif(N, 10, 50))
+test_that("resizing works for GI, IS objects", {
+    # Common resizing operation.
+    new.size <- 30
     suppressWarnings(x2 <- resize(x, fix="center", width=new.size))
     ref <- resize(regions(x), fix="center", width=new.size)
 
     expect_identical(anchors(x2, type="first"), ref[anchors(x, type="first", id=TRUE)])
     expect_identical(anchors(x2, type="second"), ref[anchors(x, type="second", id=TRUE)])
     expect_false(is.unsorted(regions(x2)))
-    
+
+    # Checking that this works for ISet objects.    
     iset <- InteractionSet(matrix(0, nrow=Np, ncol=2), x)
     iset2 <- resize(iset, fix="center", width=new.size)
     expect_identical(class(iset2), class(iset))
     expect_identical(interactions(iset2), x2)
+    
+    # Variable resizing operation.
+    new.size <- round(runif(Np, 10, 50))
+    suppressWarnings(x2 <- resize(x, fix="center", width=new.size))
+    expect_identical(anchors(x2, type="first"), resize(anchors(x, type="first"), width=new.size, fix="center"))
+    expect_identical(anchors(x2, type="second"), resize(anchors(x, type="second"), width=new.size, fix="center"))
+    expect_false(is.unsorted(regions(x2)))
+    
+    # Highly variable resizing.
+    new.size1 <- round(runif(Np, 10, 50))
+    new.size2 <- round(runif(Np, 10, 50))
+    suppressWarnings(x2 <- resize(x, fix="center", width=list(new.size1, new.size2)))
+    expect_identical(anchors(x2, type="first"), resize(anchors(x, type="first"), width=new.size1, fix="center"))
+    expect_identical(anchors(x2, type="second"), resize(anchors(x, type="second"), width=new.size2, fix="center"))
+    expect_false(is.unsorted(regions(x2)))  
 
+    # Checking that a warning is raised when we recycle.
+    expect_warning(x2 <- resize(x, fix="center", width=1:3), "not a multiple")
+    expect_warning(x2 <- resize(x, fix="center", width=1:1001), "not a multiple")
+})
+
+test_that("resizing works for CM objects", {
     # Now for CM objects.
+    new.size <- 30
     y <- inflate(x, "chrA", "chrB")
     y2 <- resize(y, fix="center", width=new.size)
+    ref <- resize(regions(x), fix="center", width=new.size)
 
     expect_identical(class(y), class(y2))
     expect_identical(anchors(y2, type="row"), ref[anchors(y, type="row", id=TRUE)])
     expect_identical(anchors(y2, type="column"), ref[anchors(y, type="column", id=TRUE)])
+
+    # Variable resizing.
+    new.size1 <- round(runif(nrow(y), 10, 50))
+    new.size2 <- round(runif(ncol(y), 10, 50))
+    suppressWarnings(y2 <- resize(y, fix="center", width=list(new.size1, new.size2)))
+    expect_identical(anchors(y2, type="row"), resize(anchors(y, type="row"), width=new.size1, fix="center"))
+    expect_identical(anchors(y2, type="column"), resize(anchors(y, type="column"), width=new.size2, fix="center"))
+    expect_false(is.unsorted(regions(y2)))  
 })
+
+# We won't bother to check variable values for the rest, as the underlying code is exactly the same as resize().
 
 test_that("narrowing works for all objects", {
     suppressWarnings(x2 <- narrow(x, start=3))
@@ -66,7 +101,7 @@ test_that("narrowing works for all objects", {
     expect_identical(anchors(x2, type="first"), ref[anchors(x, type="first", id=TRUE)])
     expect_identical(anchors(x2, type="second"), ref[anchors(x, type="second", id=TRUE)])
     expect_false(is.unsorted(regions(x2)))
-    
+
     iset <- InteractionSet(matrix(0, nrow=Np, ncol=2), x)
     iset2 <- narrow(iset, start=3)
     expect_identical(class(iset2), class(iset))
@@ -103,15 +138,35 @@ test_that("shifting works for all objects", {
     expect_identical(anchors(y2, type="column"), ref[anchors(y, type="column", id=TRUE)])
 })
 
-test_that("width calculations work for all objects", {
-    x2 <- trim(x)
-    expect_identical(width(x2), DataFrame(anchor1=width(anchors(x2, type="first")), anchor2=width(anchors(x2, type="second"))))
+test_that("flanking works for all objects", {
+    suppressWarnings(x2 <- flank(x, width=10))
+    ref <- flank(regions(x), width=10)
+
+    expect_identical(anchors(x2, type="first"), ref[anchors(x, type="first", id=TRUE)])
+    expect_identical(anchors(x2, type="second"), ref[anchors(x, type="second", id=TRUE)])
+    expect_false(is.unsorted(regions(x2)))
     
     iset <- InteractionSet(matrix(0, nrow=Np, ncol=2), x)
-    iset2 <- trim(iset)
-    expect_identical(width(iset2), width(x2))
+    iset2 <- flank(iset, width=10)
+    expect_identical(class(iset2), class(iset))
+    expect_identical(interactions(iset2), x2)
+
+    # Now for CM objects.
+    y <- inflate(x, "chrA", "chrB")
+    y2 <- flank(y, width=10)
+
+    expect_identical(class(y), class(y2))
+    expect_identical(anchors(y2, type="row"), ref[anchors(y, type="row", id=TRUE)])
+    expect_identical(anchors(y2, type="column"), ref[anchors(y, type="column", id=TRUE)])
+})
+
+
+test_that("width calculations work for all objects", {
+    expect_identical(width(x), DataFrame(anchor1=width(anchors(x, type="first")), anchor2=width(anchors(x, type="second"))))
+    
+    iset <- InteractionSet(matrix(0, nrow=Np, ncol=2), x)
+    expect_identical(width(iset), width(x))
 
     y <- inflate(x, "chrA", "chrB")
-    y2 <- trim(y)
-    expect_identical(width(y2), list(anchor1=width(anchors(y2, type="row")), anchor2=width(anchors(y2, type="column"))))
+    expect_identical(width(y), list(anchor1=width(anchors(y, type="row")), anchor2=width(anchors(y, type="column"))))
 })
