@@ -162,11 +162,11 @@ test_that("flanking works for all objects", {
 
 
 test_that("width calculations work for all objects", {
-    expect_identical(width(x), DataFrame(anchor1=width(anchors(x, type="first")), anchor2=width(anchors(x, type="second"))))
+    expect_identical(width(x), list(first=width(anchors(x, type="first")), second=width(anchors(x, type="second"))))
     
     iset <- InteractionSet(matrix(0, nrow=Np, ncol=2), x)
     expect_identical(width(iset), width(x))
 
     y <- inflate(x, "chrA", "chrB")
-    expect_identical(width(y), list(anchor1=width(anchors(y, type="row")), anchor2=width(anchors(y, type="column"))))
+    expect_identical(width(y), list(row=width(anchors(y, type="row")), column=width(anchors(y, type="column"))))
 })

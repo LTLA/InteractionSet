@@ -73,9 +73,9 @@ After any modifications are applied, resorting may be performed to ensure that t
 This means that the order of the ranges in the \code{regions} slot may change between the input and output object.
 However, the number and order of the \emph{interactions} will not change.
 
-For GInteractions and InteractionSet objects, the \code{width} method will return a DataFrame with integer fields \code{anchor1} and \code{anchor2}.
-Each row contains the width of the two anchor regions corresponding to each interaction.
-For ContactMatrix objects, the method will return a list with the same fields (a different format is necessary as the lengths of \code{anchor1} and \code{anchor2} may be different).
+For GInteractions and InteractionSet objects, the \code{width} method will return a list with two integer vectors \code{first} and \code{second} with the same length as \code{x}.
+These contain the widths of the first or second anchor regions corresponding to each interaction.
+For ContactMatrix objects, the method will return a list with the vectors \code{row} and \code{column}, with lengths equal to the number of rows and column respectively.
 }
 
 \value{

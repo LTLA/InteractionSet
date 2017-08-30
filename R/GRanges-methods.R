@@ -94,12 +94,12 @@ for (siglist in c("GInteractions", "ContactMatrix")) {
 
 setMethod("width", "GInteractions", function(x) {
     w <- width(regions(x))          
-    DataFrame(anchor1=w[anchor1(x)], anchor2=w[anchor2(x)])
+    list(first=w[anchor1(x)], second=w[anchor2(x)])
 })
 
 setMethod("width", "ContactMatrix", function(x) {
     w <- width(regions(x))          
-    list(anchor1=w[anchor1(x)], anchor2=w[anchor2(x)])
+    list(row=w[anchor1(x)], column=w[anchor2(x)])
 })
 
 # Same methods for the interaction set.
