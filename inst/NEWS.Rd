@@ -13,6 +13,13 @@ Changed default fill for InteractionSet to missing.
 \item Separated subsetting and combining documentation into two different pages. 
 
 \item Added convenience wrappers for resize(), narrow() and shift() on the GenomicRanges slot in all objects.
+
+\item Modified anchors() to return a list rather than GRangesList.
+
+\item Modified width() for GInteractions to return a list() rather than a DataFrame().
+Also changed names of list element.
+
+\item Added the anchorIds() function for rapid extraction of anchor IDs.
 }}
 
 \section{Version 1.4.0}{\itemize{
