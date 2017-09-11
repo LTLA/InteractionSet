@@ -8,10 +8,7 @@
 #include <cstring>
 #include <sstream>
 
-#include "R.h"
-#include "Rinternals.h"
-#include "R_ext/Rdynload.h"
-#include "R_ext/Visibility.h"
+#include "Rcpp.h"
 
 extern "C" {
 

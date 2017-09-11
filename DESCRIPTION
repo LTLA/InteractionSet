@@ -7,8 +7,9 @@ Author: Aaron Lun <alun@wehi.edu.au>, Malcolm Perry <mgperry32@gmail.com>,
 Maintainer: Aaron Lun <alun@wehi.edu.au>
 Depends: R (>= 3.4), GenomicRanges (>= 1.29.6), SummarizedExperiment (>= 1.1.6)
 Imports: IRanges, S4Vectors (>= 0.13.13), GenomeInfoDb, BiocGenerics, 
-        methods, Matrix
+        methods, Matrix, Rcpp
 Suggests: testthat, knitr, rmarkdown, BiocStyle
+LinkingTo: Rcpp
 biocViews: Infrastructure, DataRepresentation, Software, HiC
 Description: Provides the GInteractions, InteractionSet and ContactMatrix
         objects and associated methods for storing and manipulating genomic 

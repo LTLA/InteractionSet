@@ -32,3 +32,4 @@ import(GenomicRanges, SummarizedExperiment, methods,
 
 importFrom("Matrix", "Matrix", "sparseMatrix")
 
+importFrom("Rcpp", sourceCpp)

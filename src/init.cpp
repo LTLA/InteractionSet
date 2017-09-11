@@ -1,4 +1,7 @@
 #include "iset.h"
+#include "R_ext/Rdynload.h"
+#include "R_ext/Visibility.h"
+
 #define REGISTER(x, i) {#x, (DL_FUNC) &x, i}
 
 extern "C" {
