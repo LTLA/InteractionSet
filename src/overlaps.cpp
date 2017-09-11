@@ -472,7 +472,7 @@ void detect_paired_olaps(output_store* output, SEXP anchor1, SEXP anchor2,
         SEXP querystarts, SEXP queryends, SEXP subject, 
         SEXP next_anchor_start1, SEXP next_anchor_end1, SEXP next_id1,
         SEXP next_anchor_start2, SEXP next_anchor_end2, SEXP next_id2,
-        SEXP num_next_pairs, SEXP use_both) {
+        SEXP use_both) {
 
     Rcpp::IntegerVector a1(anchor1), a2(anchor2);
     const int Npairs = a1.size();
@@ -484,12 +484,8 @@ void detect_paired_olaps(output_store* output, SEXP anchor1, SEXP anchor2,
     Rcpp::IntegerVector nas1(next_anchor_start1), nae1(next_anchor_end1), nid1(next_id1);
     Rcpp::IntegerVector nas2(next_anchor_start2), nae2(next_anchor_end2), nid2(next_id2);
 
-    Rcpp::IntegerVector _num_next_pairs(num_next_pairs);
-    if (_num_next_pairs.size()!=1) { 
-        throw std::runtime_error("total number of next pairs must be an integer scalar"); 
-    }
-    const int Nnp = _num_next_pairs[0];
-    if (nid1.size()!=Nnp || nid2.size()!=Nnp) { 
+    const int Nnp = nid1.size();
+    if (Nnp!=nid2.size()) { 
         throw std::runtime_error("number of next IDs is not equal to specified number of pairs"); 
     }
 
@@ -587,13 +583,14 @@ SEXP paired_olaps(SEXP anchor1, SEXP anchor2,
         SEXP querystarts, SEXP queryends, SEXP subject,
         SEXP next_anchor_start1, SEXP next_anchor_end1, SEXP next_id1,
         SEXP next_anchor_start2, SEXP next_anchor_end2, SEXP next_id2,
-        SEXP num_next_pairs, SEXP use_both, SEXP select) {
+        SEXP use_both, SEXP select) {
     BEGIN_RCPP
     auto x=choose_output_type(select, Rf_ScalarLogical(1));
-    detect_paired_olaps(x.get(), anchor1, anchor2, querystarts, queryends, subject,
+    detect_paired_olaps(x.get(), anchor1, anchor2, 
+        querystarts, queryends, subject,
         next_anchor_start1, next_anchor_end1, next_id1,
         next_anchor_start2, next_anchor_end2, next_id2,
-        num_next_pairs, use_both);
+        use_both);
     return x->generate();
     END_RCPP
 }

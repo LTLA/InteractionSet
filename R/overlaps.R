@@ -139,7 +139,7 @@ setMethod("findOverlaps", c(query="Vector", subject="GInteractions"),
                  left.bounds$first - 1L, left.bounds$last, olap$ranges.dex - 1L, 
                  right.bounds1$first - 1L, right.bounds1$last, o1 - 1L,
                  right.bounds2$first - 1L, right.bounds2$last, o2 - 1L,
-                 npairs, .decode_region_mode(use.region, c("both", "same", "reverse")), select)
+                 .decode_region_mode(use.region, c("both", "same", "reverse")), select)
 
     # Deciding what output to return.
     final <- out
