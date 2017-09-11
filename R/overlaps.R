@@ -70,7 +70,6 @@
     out <- .Call(cxx_linear_olaps, a1 - 1L, a2 - 1L, bounds$first - 1L, bounds$last, 
                  olap$ranges.dex - 1L, length(ranges), .decode_region_mode(use.region),
                  select, gi.is.query)
-    if (is.character(out)) { stop(out) }
 
     # Processing into a Hits object if required.
     final <- out
@@ -141,7 +140,6 @@ setMethod("findOverlaps", c(query="Vector", subject="GInteractions"),
                  right.bounds1$first - 1L, right.bounds1$last, o1 - 1L,
                  right.bounds2$first - 1L, right.bounds2$last, o2 - 1L,
                  npairs, .decode_region_mode(use.region, c("both", "same", "reverse")), select)
-    if (is.character(out)) { stop(out) }
 
     # Deciding what output to return.
     final <- out

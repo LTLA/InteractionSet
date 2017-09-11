@@ -26,7 +26,6 @@
                  bounds1$first - 1L, bounds1$last, olap1$ranges.dex - 1L, nregs1,
                  bounds2$first - 1L, bounds2$last, olap2$ranges.dex - 1L, nregs2,
                  is.same, .decode_region_mode(use.region, c("both", "same", "reverse")))
-    if (is.character(out)) { stop(out) }
     return(data.frame(query=out[[1]]+1L, subject1=out[[2]]+1L, subject2=out[[3]]+1L))    
 }
 

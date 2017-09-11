@@ -30,9 +30,7 @@
 
     # Using indices for easy comparison inside C++.
     bound1 <- .Call(cxx_get_box_bounds, f, ref.fac, a1, chrs, starts, ends)
-    if (is.character(bound1)) { stop(bound1) }
     bound2 <- .Call(cxx_get_box_bounds, f, ref.fac, a2, chrs, starts, ends)
-    if (is.character(bound2)) { stop(bound2) }
 
     gr1 <- GRanges(ref.chr[bound1[[2]]], IRanges(bound1[[3]], bound1[[4]]), seqinfo=seqinfo(x)) 
     gr2 <- GRanges(ref.chr[bound2[[2]]], IRanges(bound2[[3]], bound2[[4]]), seqinfo=seqinfo(x))
