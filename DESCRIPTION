@@ -16,6 +16,7 @@ Description: Provides the GInteractions, InteractionSet and ContactMatrix
         interaction data from Hi-C and ChIA-PET experiments.
 License: GPL-3
 NeedsCompilation: yes
+SystemRequirements: C++11
 VignetteBuilder: knitr
 Collate: AllGenerics.R AllClasses.R 
         ContactMatrix-methods.R GInteractions-methods.R 

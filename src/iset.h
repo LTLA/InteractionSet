@@ -7,6 +7,7 @@
 #include <set>
 #include <cstring>
 #include <sstream>
+#include <memory>
 
 #include "Rcpp.h"
 

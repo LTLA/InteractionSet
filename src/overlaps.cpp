@@ -12,7 +12,7 @@ void check_indices (const Rcpp::IntegerVector& query_start, const Rcpp::IntegerV
     const int Ns=subject_index.size();
     
     // Checking query inputs.
-    Rcpp::IntegerVector::const_iterator qsIt=query_start.begin(), qeIt=query_end.begin();
+    auto qsIt=query_start.begin(), qeIt=query_end.begin();
     for (int checkdex=0; checkdex < Nq; ++checkdex, ++qsIt, ++qeIt) { 
         const int& curqs =*qsIt;
         const int& curqe =*qeIt;
@@ -34,8 +34,7 @@ void check_indices (const Rcpp::IntegerVector& query_start, const Rcpp::IntegerV
     if (Nsubjects < 0) { 
         throw std::runtime_error("total number of subject indices must be non-negative"); 
     }
-    for (int checkdex=0; checkdex < Ns; ++checkdex) { 
-        const int& curs = subject_index[checkdex];
+    for (const auto& curs : subject_index) { 
         if (curs >= Nsubjects || curs < 0 || curs==NA_INTEGER) { 
             throw std::runtime_error("subject index out of bounds"); 
         }
@@ -374,8 +373,8 @@ void help_add_current_paired_overlaps(const int& true_mode_start, const int& tru
         const Rcpp::IntegerVector& next_anchor_start2, const Rcpp::IntegerVector& next_anchor_end2, const Rcpp::IntegerVector& next_id2,
         const Rcpp::IntegerVector& subject_index, 
         output_store* output, 
-        int* latest_pair_A, bool* is_complete_A,
-        int* latest_pair_B, bool* is_complete_B) {
+        int* latest_pair_A, int* is_complete_A,
+        int* latest_pair_B, int* is_complete_B) {
     /* This helper function checks all overlaps involving the interaction indexed by 'curpair'.
      * Factorized out of the main function below to avoid using 'goto's upon the quit() call.
      */
@@ -392,7 +391,7 @@ void help_add_current_paired_overlaps(const int& true_mode_start, const int& tru
     for (int mode=true_mode_start; mode<maxmode; ++mode) { 
         int curq1=0, curq2=0;
         int* latest_pair=NULL;
-        bool* is_complete=NULL;
+        int* is_complete=NULL;
 
         if (mode==0) { 
             curq1 = a1;
@@ -509,21 +508,15 @@ void detect_paired_olaps(output_store* output, SEXP anchor1, SEXP anchor2,
 
     // Setting up logging arrays. 
     output->prime(Npairs, Nnp);
-    int* latest_pair_A=(int*)R_alloc(Nnp, sizeof(int));
-    int* latest_pair_B=(int*)R_alloc(Nnp, sizeof(int));
-    bool* is_complete_A=(bool*)R_alloc(Nnp, sizeof(bool));
-    bool* is_complete_B=(bool*)R_alloc(Nnp, sizeof(bool));
-    std::fill(latest_pair_A, latest_pair_A+Nnp, -1);
-    std::fill(latest_pair_B, latest_pair_B+Nnp, -1);
-    std::fill(is_complete_A, is_complete_A+Nnp, true);
-    std::fill(is_complete_B, is_complete_B+Nnp, true);
+    std::vector<int> latest_pair_A(Nnp, -1), latest_pair_B(Nnp, -1),
+        is_complete_A(Nnp, true), is_complete_B(Nnp, true);
 
     for (int curpair=0; curpair<Npairs; ++curpair) {
         help_add_current_paired_overlaps(true_mode_start, true_mode_end, 
                 curpair, a1, a2, qs, qe, nas1, nae1, nid1, nas2, nae2, nid2,
                 subj, output,
-                latest_pair_A, is_complete_A,
-                latest_pair_B, is_complete_B);
+                latest_pair_A.data(), is_complete_A.data(),
+                latest_pair_B.data(), is_complete_B.data());
         output->postprocess();
     }
 
@@ -534,7 +527,7 @@ void detect_paired_olaps(output_store* output, SEXP anchor1, SEXP anchor2,
  * Functions that actually get called from R.
  *****************************************************************************************************/
 
-output_store* choose_output_type(SEXP select, SEXP GIquery) {
+std::unique_ptr<output_store> choose_output_type(SEXP select, SEXP GIquery) {
     Rcpp::StringVector _select(select);
     if (_select.size()!=1) { 
         throw std::runtime_error("'select' specifier should be a single string"); 
@@ -548,35 +541,35 @@ output_store* choose_output_type(SEXP select, SEXP GIquery) {
     const bool giq=_GIquery[0];
 
     if (std::strcmp(selstring, "all")==0) {
-        return new expanded_overlap;
+        return std::unique_ptr<output_store>(new expanded_overlap);
     } else if (std::strcmp(selstring, "first")==0) {
         if (giq) {
-            return new first_query_overlap;
+            return std::unique_ptr<output_store>(new first_query_overlap);
         } else {
-            return new first_subject_overlap;
+            return std::unique_ptr<output_store>(new first_subject_overlap);
         }
     } else if (std::strcmp(selstring, "last")==0) {
         if (giq) {
-            return new last_query_overlap;
+            return std::unique_ptr<output_store>(new last_query_overlap);
         } else {
-            return new last_subject_overlap;
+            return std::unique_ptr<output_store>(new last_subject_overlap);
         }
     } else if (std::strcmp(selstring, "arbitrary")==0) {
         if (giq) {
-            return new arbitrary_query_overlap;
+            return std::unique_ptr<output_store>(new arbitrary_query_overlap);
         } else {
             /* Unfortunately, this CANNOT be sped up via quit(), because the loop is done with 
              * respect to the left GInteractions-as-query. Quitting would only record an arbitrary
              * overlap with respect to the query, not with respect to the subject. Thus, some 
              * subjects that might have been overlapped will be missed when you quit.
              */
-            return new first_subject_overlap; 
+            return std::unique_ptr<output_store>(new first_subject_overlap); 
         }
     } else if (std::strcmp(selstring, "count")==0) {
         if (giq) {
-            return new query_count_overlap;
+            return std::unique_ptr<output_store>(new query_count_overlap);
         } else {
-            return new subject_count_overlap;
+            return std::unique_ptr<output_store>(new subject_count_overlap);
         }
     } 
     throw std::runtime_error("'select' should be 'all', 'first', 'last', 'arbitrary', or 'count'");
@@ -584,19 +577,9 @@ output_store* choose_output_type(SEXP select, SEXP GIquery) {
 
 SEXP linear_olaps(SEXP anchor1, SEXP anchor2, SEXP querystarts, SEXP queryends, SEXP subject, SEXP nsubjects, SEXP use_both, SEXP select, SEXP GIquery) {
     BEGIN_RCPP
-    Rcpp::RObject output;
-    output_store * x=choose_output_type(select, GIquery);
-
-    try {
-        detect_olaps(x, anchor1, anchor2, querystarts, queryends, subject, nsubjects, use_both);
-        output=x->generate();
-    } catch (std::exception& e) {
-        delete x;
-        throw;
-    }
-
-    delete x;
-    return output;
+    auto x=choose_output_type(select, GIquery);
+    detect_olaps(x.get(), anchor1, anchor2, querystarts, queryends, subject, nsubjects, use_both);
+    return x->generate();
     END_RCPP
 }
 
@@ -605,24 +588,13 @@ SEXP paired_olaps(SEXP anchor1, SEXP anchor2,
         SEXP next_anchor_start1, SEXP next_anchor_end1, SEXP next_id1,
         SEXP next_anchor_start2, SEXP next_anchor_end2, SEXP next_id2,
         SEXP num_next_pairs, SEXP use_both, SEXP select) {
-
     BEGIN_RCPP
-    Rcpp::RObject output;
-    output_store * x=choose_output_type(select, Rf_ScalarLogical(1));
-
-    try {
-        detect_paired_olaps(x, anchor1, anchor2, querystarts, queryends, subject,
-                next_anchor_start1, next_anchor_end1, next_id1,
-                next_anchor_start2, next_anchor_end2, next_id2,
-                num_next_pairs, use_both);
-        output=x->generate();
-    } catch (std::exception& e) {
-        delete x;
-        throw;
-    }
-
-    delete x;
-    return output;
+    auto x=choose_output_type(select, Rf_ScalarLogical(1));
+    detect_paired_olaps(x.get(), anchor1, anchor2, querystarts, queryends, subject,
+        next_anchor_start1, next_anchor_end1, next_id1,
+        next_anchor_start2, next_anchor_end2, next_id2,
+        num_next_pairs, use_both);
+    return x->generate();
     END_RCPP
 }
 
