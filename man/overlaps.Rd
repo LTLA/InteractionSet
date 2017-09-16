@@ -63,20 +63,20 @@ Find overlaps between interactions and linear intervals, between interactions an
 }
 
 \usage{
-\S4method{findOverlaps}{GInteractions,Vector}(query, subject, maxgap=0L, minoverlap=1L,
+\S4method{findOverlaps}{GInteractions,Vector}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
     select=c("all", "first", "last", "arbitrary"),
     ignore.strand=FALSE, use.region="both")
 
-\S4method{overlapsAny}{GInteractions,Vector}(query, subject, maxgap=0L, minoverlap=1L,
+\S4method{overlapsAny}{GInteractions,Vector}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
     ignore.strand=FALSE, use.region="both")
 
-\S4method{countOverlaps}{GInteractions,Vector}(query, subject, maxgap=0L, minoverlap=1L,
+\S4method{countOverlaps}{GInteractions,Vector}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
     ignore.strand=FALSE, use.region="both")
 
-\S4method{subsetByOverlaps}{GInteractions,Vector}(query, subject, maxgap=0L, minoverlap=1L,
+\S4method{subsetByOverlaps}{GInteractions,Vector}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
     ignore.strand=FALSE, use.region="both")
 

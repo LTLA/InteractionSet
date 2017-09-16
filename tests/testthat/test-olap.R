@@ -49,8 +49,8 @@ if (object=="GRanges") {
 
 for (param in seq_len(6)) {
     type <- "any"
-    maxgap <- 0L
-    minoverlap <- 1L
+    maxgap <- -1L
+    minoverlap <- 0L
     use.region <- "both"
     if (param==2L) { 
         maxgap <- 10L
@@ -212,8 +212,8 @@ pairing <- anchors(x2)
 
 for (param in seq_len(6)) {
     type <- "any"
-    maxgap <- 0L
-    minoverlap <- 1L
+    maxgap <- -1L
+    minoverlap <- 0L
     use.region <- "both"
     if (param==2L) { 
         maxgap <- 10L

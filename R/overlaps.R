@@ -86,7 +86,7 @@
 }
 
 setMethod("findOverlaps", c(query="GInteractions", subject="Vector"), 
-    function(query, subject, maxgap=0L, minoverlap=1L, 
+    function(query, subject, maxgap=-1L, minoverlap=0L, 
              type=c("any", "start", "end", "within", "equal"),
              select=c("all", "first", "last", "arbitrary"),
              ignore.strand=FALSE, use.region="both") {
@@ -100,7 +100,7 @@ setMethod("findOverlaps", c(query="GInteractions", subject="Vector"),
 )
 
 setMethod("findOverlaps", c(query="Vector", subject="GInteractions"),
-    function(query, subject, maxgap=0L, minoverlap=1L, 
+    function(query, subject, maxgap=-1L, minoverlap=0L, 
              type=c("any", "start", "end", "within", "equal"),
              select=c("all", "first", "last", "arbitrary"),
              ignore.strand=FALSE, use.region="both") {
@@ -152,7 +152,7 @@ setMethod("findOverlaps", c(query="Vector", subject="GInteractions"),
 }
 
 setMethod("findOverlaps", c(query="GInteractions", subject="GInteractions"),
-    function(query, subject, maxgap=0L, minoverlap=1L, 
+    function(query, subject, maxgap=-1L, minoverlap=0L, 
              type=c("any", "start", "end", "within", "equal"),
              select=c("all", "first", "last", "arbitrary"),
              ignore.strand=FALSE, use.region="both") {
@@ -165,7 +165,7 @@ setMethod("findOverlaps", c(query="GInteractions", subject="GInteractions"),
 )
 
 setMethod("findOverlaps", c(query="GInteractions", subject="missing"),
-    function(query, subject, maxgap=0L, minoverlap=1L, 
+    function(query, subject, maxgap=-1L, minoverlap=0L, 
              type=c("any", "start", "end", "within", "equal"),
              select=c("all", "first", "last", "arbitrary"),
              ignore.strand=FALSE, use.region="both") {
@@ -181,7 +181,7 @@ setMethod("findOverlaps", c(query="GInteractions", subject="missing"),
 # This defines the countOverlaps method.
 
 setMethod("countOverlaps", c(query="GInteractions", subject="Vector"), 
-    function(query, subject, maxgap=0L, minoverlap=1L, 
+    function(query, subject, maxgap=-1L, minoverlap=0L, 
              type=c("any", "start", "end", "within", "equal"),
              ignore.strand=FALSE, use.region="both") {
         type <- match.arg(type)
@@ -193,7 +193,7 @@ setMethod("countOverlaps", c(query="GInteractions", subject="Vector"),
 )
 
 setMethod("countOverlaps", c(query="Vector", subject="GInteractions"),
-    function(query, subject, maxgap=0L, minoverlap=1L, 
+    function(query, subject, maxgap=-1L, minoverlap=0L, 
              type=c("any", "start", "end", "within", "equal"),
              ignore.strand=FALSE, use.region="both") {
         type <- match.arg(type)
@@ -205,7 +205,7 @@ setMethod("countOverlaps", c(query="Vector", subject="GInteractions"),
 )
 
 setMethod("countOverlaps", c(query="GInteractions", subject="GInteractions"),
-    function(query, subject, maxgap=0L, minoverlap=1L, 
+    function(query, subject, maxgap=-1L, minoverlap=0L, 
              type=c("any", "start", "end", "within", "equal"),
              ignore.strand=FALSE, use.region="both") {
         type <- match.arg(type)
@@ -217,7 +217,7 @@ setMethod("countOverlaps", c(query="GInteractions", subject="GInteractions"),
 )
 
 setMethod("countOverlaps", c(query="GInteractions", subject="missing"),
-    function(query, subject, maxgap=0L, minoverlap=1L, 
+    function(query, subject, maxgap=-1L, minoverlap=0L, 
              type=c("any", "start", "end", "within", "equal"),
              ignore.strand=FALSE, use.region='both') {
         type <- match.arg(type)
@@ -287,11 +287,11 @@ for (siglist in list(
     }
 
     setMethod("countOverlaps", siglist, olap.fun.gen(first.IS, second.IS, "countOverlaps", 
-             alist(maxgap=0L, minoverlap=1L, 
+             alist(maxgap=-1L, minoverlap=0L, 
              type=c("any", "start", "end", "within", "equal"),
              ignore.strand=FALSE, use.region='both')))
     setMethod("findOverlaps", siglist, olap.fun.gen(first.IS, second.IS, "findOverlaps", 
-             alist(maxgap=0L, minoverlap=1L, 
+             alist(maxgap=-1L, minoverlap=0L, 
              type=c("any", "start", "end", "within", "equal"),
              select=c("all", "first", "last", "arbitrary"),
              ignore.strand=FALSE, use.region='both')))
@@ -301,7 +301,7 @@ for (siglist in list(
 # Defining overlapsAny for ContactMatrix objects.
 
 setMethod("overlapsAny", c("ContactMatrix", "Vector"), 
-    function(query, subject, maxgap=0L, minoverlap=1L,
+    function(query, subject, maxgap=-1L, minoverlap=0L,
         type=c("any", "start", "end", "within", "equal"),
         ignore.strand=FALSE) {
         a1 <- anchors(query, id=TRUE, type="row")
@@ -322,7 +322,7 @@ for (siglist in list(
         c(query="ContactMatrix", subject="InteractionSet")
     )) {
     setMethod("overlapsAny", siglist,
-        function(query, subject, maxgap=0L, minoverlap=1L,
+        function(query, subject, maxgap=-1L, minoverlap=0L,
              type=c("any", "start", "end", "within", "equal"),
              ignore.strand=FALSE, use.region='both') {
         # It's possible to do this more efficiently by avoiding instantiation of the full object.
