@@ -2,10 +2,13 @@
 
 setMethod("match", c("GInteractions", "GInteractions"), 
     function(x, table, nomatch = NA_integer_, incomparables = NULL, ...) {
-
         .strict_check(x, table)
-        if (!identical(regions(x), regions(table))) { 
-            stop("'regions' must be identical for arguments to 'match'")
+
+        rx <- regions(x)
+        rtab <- regions(table)
+        if (length(rx)!=length(rtab) || any(rx!=rtab)) { 
+            # Diverting to findOverlaps if the regions are not equal.
+            return(findOverlaps(x, table, type="equal", select="first", use.region="same"))
         }
 
         # Using the Hits method, for convenience (this automatically resorts).
@@ -42,11 +45,23 @@ setMethod("match", c("InteractionSet", "InteractionSet"),
 
 setMethod("pcompare",  c("GInteractions", "GInteractions"), function(x, y) { 
     .strict_check(x, y)
-    if (length(regions(x))!=length(regions(y)) || any(regions(x)!=regions(y))) { 
-        stop("'regions' must be identical for arguments to 'pcompare'")
+    a1.x <- anchor1(x)
+    a2.x <- anchor2(x)
+    a1.y <- anchor1(y)
+    a2.y <- anchor2(y)
+
+    rx <- regions(x)
+    ry <- regions(y)
+    if (length(rx)!=length(ry) || any(rx!=ry)) { # Coercing them to the same system, if they're not equal.
+        collated <- .collate_GRanges(rx, ry)
+        a1.x <- collated$indices[[1]][a1.x]
+        a2.x <- collated$indices[[1]][a2.x]
+        a1.y <- collated$indices[[2]][a1.y]
+        a2.y <- collated$indices[[2]][a2.y]        
     }
-    output1 <- anchor1(x) - anchor1(y)
-    output2 <- anchor2(x) - anchor2(y) # explicitly formed for proper recycling.
+
+    output1 <- a1.x - a1.y
+    output2 <- a2.x - a2.y # explicitly formed for proper recycling.
     tied1 <- output1==0L
     output1[tied1] <- output2[tied1]
     return(output1)
