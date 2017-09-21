@@ -65,6 +65,11 @@ test_that("delegated getters/setters work for IS objects", {
     expect_identical(anchors(x, id=TRUE), anchors(ref, id=TRUE))
     expect_identical(anchors(x, type="first"), anchors(ref, type="first"))
     expect_identical(anchors(x, type="second"), anchors(ref, type="second"))
+
+    expect_identical(anchorIds(x), anchorIds(ref))
+    expect_identical(anchorIds(x, type="first"), anchorIds(ref, type="first"))
+    expect_identical(anchorIds(x, type="second"), anchorIds(ref, type="second"))
+
     expect_identical(first(x), first(ref))
     expect_identical(second(x), second(ref))
     

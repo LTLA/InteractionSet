@@ -251,9 +251,13 @@ setMethod("anchors", "InteractionSet", function(x, type="both", id=FALSE) {
     anchors(interactions(x), type=type, id=id) 
 })
 
-setMethod("first", "InteractionSet", function(x) { anchors(x, type="first") })
+setMethod("anchorIds", "InteractionSet", function(x, type="both") {
+    anchorIds(interactions(x), type=type)
+})
 
-setMethod("second", "InteractionSet", function(x) { anchors(x, type="second") })
+setMethod("first", "InteractionSet", function(x) { first(interactions(x)) })
+
+setMethod("second", "InteractionSet", function(x) { second(interactions(x)) })
 
 setMethod("regions", "InteractionSet", function(x) { regions(interactions(x)) })
 
