@@ -44,9 +44,11 @@ Methods to order, compare and de-duplicate GInteractions or InteractionSet objec
 
 \S4method{match}{GInteractions,GInteractions}(x, table, nomatch=NA_integer_, incomparables=NULL, ...)
 
-# The same call for 'match' is used for all possible combinations of
-# GInteractions and InteractionSet objects in 'x' or 'table'. 
-# For brevity, these will not be listed here.
+\S4method{match}{GInteractions,InteractionSet}(x, table, nomatch=NA_integer_, incomparables=NULL, ...)
+
+\S4method{match}{InteractionSet,GInteractions}(x, table, nomatch=NA_integer_, incomparables=NULL, ...)
+
+\S4method{match}{InteractionSet,InteractionSet}(x, table, nomatch=NA_integer_, incomparables=NULL, ...)
 
 \S4method{pcompare}{GInteractions,GInteractions}(x, y)
 }
@@ -127,13 +129,13 @@ This is equivalent to \code{x[!duplicated(x),]}, with any additional arguments p
 The \code{match} function will return an integer vector of length equal to that of \code{x}.
 Each entry of the vector corresponds to an interaction in \code{x} and contains the index of the first interaction \code{table} with the same anchor regions.
 Interactions in \code{x} without any matches are assigned \code{NA} values by default.
-Note that the \code{regions} slot must be identical between \code{x} and \code{table}.
+If the \code{regions} slot is not the same between \code{x} and \code{table}, \code{match} will call \code{\link{findOverlaps}} to identify exact two-dimensional overlaps.
 
 The \code{pcompare} function will return an integer vector of length equal to \code{x} and \code{y}.
 This performs parallel comparisons between corresponding entries in two GInteractions objects, based on the values of the anchor indices 
 (\code{anchor1} first, and then \code{anchor2} if \code{anchor1} is tied).
-Negative, zero and positive values indicate that the corresponding interaction in \code{x} is 'lesser', equal or 'greater' than the corresponding interaction in \code{y}.
-Again, the \code{regions} must be identical between the two objects.
+Negative, zero and positive values indicate that the corresponding interaction in \code{x} is \dQuote{lesser}, equal or \dQuote{greater} than the corresponding interaction in \code{y}.
+If the \code{regions} slot is not the same between the two objects, the union of regions for both objects will be used to obtain comparable indices.
 }
 
 \section{Swapping anchors}{

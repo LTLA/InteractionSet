@@ -2,7 +2,7 @@
 \title{InteractionSet News}
 \encoding{UTF-8}
 
-\section{Version 1.5.4}{\itemize{
+\section{Version 1.5.7}{\itemize{
 \item Removed c() method for InteractionSet, rbind method for GInteractions.
 
 \item Generalized ContactMatrix to allow any type of matrix-like object.
@@ -20,6 +20,8 @@ Changed default fill for InteractionSet to missing.
 Also changed names of list element.
 
 \item Added the anchorIds() function for rapid extraction of anchor IDs.
+
+\item Removed the requirement for identical regions in pcompare() and match().
 }}
 
 \section{Version 1.4.0}{\itemize{

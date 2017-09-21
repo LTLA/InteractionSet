@@ -80,12 +80,51 @@ Find overlaps between interactions and linear intervals, between interactions an
     type=c("any", "start", "end", "within", "equal"),
     ignore.strand=FALSE, use.region="both")
 
-# For brevity, only 'GInteractions,Vector-methods' are listed. Methods are
-# available for all pairwise combinations of GInteractions, InteractionSet, and
-# Vector objects, so long as at least one InteractionSet or GInteractions
-# object is present. In all cases, function calls are identical.  'subject' can
-# also be missing for all functions except for 'subsetByOverlaps', as long as
-# 'query' is a GInteractions or an InteractionSet.
+\S4method{findOverlaps}{Vector,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
+    type=c("any", "start", "end", "within", "equal"),
+    select=c("all", "first", "last", "arbitrary"),
+    ignore.strand=FALSE, use.region="both")
+
+\S4method{overlapsAny}{Vector,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
+    type=c("any", "start", "end", "within", "equal"),
+    ignore.strand=FALSE, use.region="both")
+
+\S4method{countOverlaps}{Vector,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
+    type=c("any", "start", "end", "within", "equal"),
+    ignore.strand=FALSE, use.region="both")
+
+\S4method{subsetByOverlaps}{Vector,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
+    type=c("any", "start", "end", "within", "equal"),
+    ignore.strand=FALSE, use.region="both")
+
+\S4method{findOverlaps}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
+    type=c("any", "start", "end", "within", "equal"),
+    select=c("all", "first", "last", "arbitrary"),
+    ignore.strand=FALSE, use.region="both")
+
+\S4method{overlapsAny}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
+    type=c("any", "start", "end", "within", "equal"),
+    ignore.strand=FALSE, use.region="both")
+
+\S4method{countOverlaps}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
+    type=c("any", "start", "end", "within", "equal"),
+    ignore.strand=FALSE, use.region="both")
+
+\S4method{subsetByOverlaps}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
+    type=c("any", "start", "end", "within", "equal"),
+    ignore.strand=FALSE, use.region="both")
+
+\S4method{findOverlaps}{GInteractions,missing}(query, subject, maxgap=-1L, minoverlap=0L,
+    type=c("any", "start", "end", "within", "equal"),
+    select=c("all", "first", "last", "arbitrary"),
+    ignore.strand=FALSE, use.region="both")
+
+\S4method{countOverlaps}{GInteractions,missing}(query, subject, maxgap=-1L, minoverlap=0L,
+    type=c("any", "start", "end", "within", "equal"),
+    ignore.strand=FALSE, use.region="both")
+
+# For brevity, only GInteractions methods are listed. However, all instances of 
+# GInteractions above can be replaced with InteractionSet objects.
 }
 
 \arguments{
@@ -140,15 +179,22 @@ For the other methods, \code{countOverlaps} returns an integer vector indicating
 }
 
 \section{Choice of regions to define overlaps}{
-For one-dimensional overlaps, \code{use.region="both"} by default such that overlaps with either interacting region are considered.
-If \code{use.region="first"}, overlaps are only considered between the interval and the first interacting region.
-Similarly, if \code{use.region="second"}, only the second interaction region is used.
+For one-dimensional overlaps, \code{use.region="both"} by default such that overlaps with either anchor region are considered.
+If \code{use.region="first"}, overlaps are only considered between the interval and the first anchor region.
+Similarly, if \code{use.region="second"}, only the second anchor region is used.
 
-For two-dimensional overlaps, \code{use.region="both"} by default such that the order of first/second interacting/target regions is ignored.
-This means that an overlap will be considered between, e.g., the first interacting region and the second target region.
-If \code{use.region="same"}, overlaps are only considered between the set of first regions for the GInteractions object and the first regions for the target pairs, and similarly for the second regions.
-If \code{use.region="reverse"}, overlaps are only considered between the set of first regions for the GInteractions object and the second regions for the target pairs, and vice versa.
-These options tend only to be useful if the order of first/second regions is informative.
+Equivalent choices are available for two-dimensional overlaps:
+\itemize{
+\item By default, \code{use.region="both"} such that the order of first/second anchor regions in the query and subject is ignored.
+This means that the first anchor region in the query can overlap both the first \emph{or} second anchor regions in the subject.
+Similarly, the second anchor region in the query can overlap both the first \emph{or} ssecond anchor regions in the subject. 
+\item If \code{use.region="same"}, overlaps are only considered between the first anchor regions for the query and the subject, 
+or between the second anchor regions for the query and subject.
+Overlaps between the first query region and the second subject region, or the second query region and the first subject region, are ignored.
+\item If \code{use.region="reverse"}, overlaps are only considered between the first anchor regions for the query and the second anchor regions for the subject, and vice versa.
+Overlaps between the first query/subject regions or between the second query/subject regions are ignored.
+}
+The latter two options tend only to be useful if the order of first/second regions is informative.
 }
 
 \section{Details for InteractionSet}{
