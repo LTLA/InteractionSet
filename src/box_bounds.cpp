@@ -4,16 +4,16 @@ SEXP get_box_bounds (SEXP ids, SEXP reflevels, SEXP adex, SEXP chrs, SEXP starts
     BEGIN_RCPP
 
     // Setting up input objects.
-    Rcpp::IntegerVector _ids(ids),_adex(adex);
+    const Rcpp::IntegerVector _ids(ids),_adex(adex);
     const int npts=_ids.size();
     if (npts!=_adex.size()) { 
         throw std::runtime_error("anchor index and grouping vectors are not of same length"); 
     }
 
-    Rcpp::StringVector _reflevels(reflevels);
+    const Rcpp::StringVector _reflevels(reflevels);
     const int nlevels=_reflevels.size();
     
-    Rcpp::IntegerVector _chrs(chrs), _starts(starts), _ends(ends);
+    const Rcpp::IntegerVector _chrs(chrs), _starts(starts), _ends(ends);
     const int nregs=_chrs.size();
     if (nregs!=_starts.size() || nregs!=_ends.size()) {
         throw std::runtime_error("chromosome/start/end vectors should have the same length"); 

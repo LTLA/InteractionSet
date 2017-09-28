@@ -316,13 +316,13 @@ void help_add_current_overlaps(const int& true_mode_start, const int& true_mode_
 }
 
 void detect_olaps(output_store* output, SEXP anchor1, SEXP anchor2, SEXP querystarts, SEXP queryends, SEXP subject, SEXP nsubjects, SEXP use_both) {
-    Rcpp::IntegerVector a1(anchor1), a2(anchor2);
+    const Rcpp::IntegerVector a1(anchor1), a2(anchor2);
     const int Npairs = a1.size();
     if (Npairs != a2.size()) { 
         throw std::runtime_error("anchor vectors must be of equal length"); 
     } 
    
-    Rcpp::IntegerVector qs(querystarts), qe(queryends), subj(subject), _nsubjects(nsubjects);
+    const Rcpp::IntegerVector qs(querystarts), qe(queryends), subj(subject), _nsubjects(nsubjects);
     if (_nsubjects.size()!=1) { 
         throw std::runtime_error("total number of subjects must be an integer scalar");
     }
@@ -474,15 +474,15 @@ void detect_paired_olaps(output_store* output, SEXP anchor1, SEXP anchor2,
         SEXP next_anchor_start2, SEXP next_anchor_end2, SEXP next_id2,
         SEXP use_both) {
 
-    Rcpp::IntegerVector a1(anchor1), a2(anchor2);
+    const Rcpp::IntegerVector a1(anchor1), a2(anchor2);
     const int Npairs = a1.size();
     if (Npairs != a2.size()) {
         throw std::runtime_error("anchor vectors must be of equal length"); 
     } 
 
-    Rcpp::IntegerVector qs(querystarts), qe(queryends), subj(subject);
-    Rcpp::IntegerVector nas1(next_anchor_start1), nae1(next_anchor_end1), nid1(next_id1);
-    Rcpp::IntegerVector nas2(next_anchor_start2), nae2(next_anchor_end2), nid2(next_id2);
+    const Rcpp::IntegerVector qs(querystarts), qe(queryends), subj(subject);
+    const Rcpp::IntegerVector nas1(next_anchor_start1), nae1(next_anchor_end1), nid1(next_id1);
+    const Rcpp::IntegerVector nas2(next_anchor_start2), nae2(next_anchor_end2), nid2(next_id2);
 
     const int Nnp = nid1.size();
     if (Nnp!=nid2.size()) { 
@@ -524,13 +524,14 @@ void detect_paired_olaps(output_store* output, SEXP anchor1, SEXP anchor2,
  *****************************************************************************************************/
 
 std::unique_ptr<output_store> choose_output_type(SEXP select, SEXP GIquery) {
-    Rcpp::StringVector _select(select);
+    const Rcpp::StringVector _select(select);
     if (_select.size()!=1) { 
         throw std::runtime_error("'select' specifier should be a single string"); 
     }
-    const char* selstring=CHAR(Rcpp::String(_select[0]).get_sexp());
+    const Rcpp::String selection(_select[0]);
+    const char* selstring=selection.get_cstring();
     
-    Rcpp::LogicalVector _GIquery(GIquery);
+    const Rcpp::LogicalVector _GIquery(GIquery);
     if (_GIquery.size()!=1) { 
         throw std::runtime_error("'GIquery' specifier should be a logical scalar"); 
     }
