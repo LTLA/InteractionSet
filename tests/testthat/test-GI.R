@@ -167,7 +167,7 @@ test_that("anchor setters work properly for GI objects", {
 test_that("region setters work properly for GI objects", { 
     shuffled <- sample(100, N, replace=TRUE)
     regions(x)$score <- shuffled
-    expect_that(regions(x)$score, is_identical_to(shuffled))
+    expect_identical(regions(x)$score, shuffled)
     expect_false(identical(regions(x), ref.regions))
     regions(x) <- ref.regions # Restoring.
     expect_true(identical(regions(x), ref.regions))
@@ -260,8 +260,8 @@ test_that("subsetting works for GI objects", {
     expect_identical(temp.x[rchosen]$score, ref.score[rchosen])
     expect_identical(nrow(mcols(temp.x[rchosen])), length(rchosen))
     
-    expect_that(length(x[0,]), is_identical_to(0L))
-    expect_that(length(x[0]), is_identical_to(0L))
+    expect_identical(length(x[0,]), 0L)
+    expect_identical(length(x[0]), 0L)
     expect_error(x[,1], "invalid subsetting")
 })
 

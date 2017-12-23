@@ -24,20 +24,20 @@ test_that("Paired distances are correct for IS objects", {
     a1[swap] <- temp
     
     is.intra <- intrachr(x)
-    expect_that(is.intra, is_identical_to(as.logical(seqnames(a1)==seqnames(a2))))
-    expect_that(is.intra, is_identical_to(pairdist(x, type="intra")))
-    expect_that(pairdist(x), is_identical_to(ifelse(is.intra, as.integer(abs(start(a1)+end(a1)-start(a2)-end(a2))/2L), as.integer(NA)))) # Don't use 'mid', it does its own rounding.
-    expect_that(pairdist(x,type="gap"), is_identical_to(ifelse(is.intra, pmax(start(a1), start(a2)) - pmin(end(a1), end(a2)) -1L, as.integer(NA)))) 
-    expect_that(pairdist(x,type="span"), is_identical_to(ifelse(is.intra, pmax(end(a1), end(a2)) - pmin(start(a1), start(a2)) +1L, as.integer(NA)))) 
+    expect_identical(is.intra, as.logical(seqnames(a1)==seqnames(a2)))
+    expect_identical(is.intra, pairdist(x, type="intra"))
+    expect_identical(pairdist(x), ifelse(is.intra, as.integer(abs(start(a1)+end(a1)-start(a2)-end(a2))/2L), as.integer(NA))) # Don't use 'mid', it does its own rounding.
+    expect_identical(pairdist(x,type="gap"), ifelse(is.intra, pmax(start(a1), start(a2)) - pmin(end(a1), end(a2)) -1L, as.integer(NA))) 
+    expect_identical(pairdist(x,type="span"), ifelse(is.intra, pmax(end(a1), end(a2)) - pmin(start(a1), start(a2)) +1L, as.integer(NA))) 
     
     ax1 <- anchors(x, type="first", id=TRUE)
     ax2 <- anchors(x, type="second", id=TRUE)
-    expect_that(pairdist(x, type="diag"), is_identical_to(ifelse(is.intra, pmax(ax1, ax2) - pmin(ax1, ax2), as.integer(NA))))
+    expect_identical(pairdist(x, type="diag"), ifelse(is.intra, pmax(ax1, ax2) - pmin(ax1, ax2), as.integer(NA)))
     
     # What happens with empty inputs?
-    expect_that(pairdist(x[0,]), is_identical_to(integer(0)))
-    expect_that(pairdist(x[0,], type="intra"), is_identical_to(logical(0)))
-    expect_that(pairdist(x[!is.intra,]), is_identical_to(rep(as.integer(NA), sum(!is.intra))))
+    expect_identical(pairdist(x[0,]), integer(0))
+    expect_identical(pairdist(x[0,], type="intra"), logical(0))
+    expect_identical(pairdist(x[!is.intra,]), rep(as.integer(NA), sum(!is.intra)))
 })
 
 ####################################################
@@ -54,19 +54,19 @@ test_that("Paired distances are correct for CM objects", {
     a1 <- anchors(x, type="row")
     a2 <- anchors(x, type="column")
     is.intra <- intrachr(x) 
-    expect_that(is.intra, is_identical_to(matrix(outer(as.character(seqnames(a1)), as.character(seqnames(a2)), "=="), nrow=Nr, ncol=Nc)))
-    expect_that(is.intra, is_identical_to(pairdist(x, type="intra")))
+    expect_identical(is.intra, matrix(outer(as.character(seqnames(a1)), as.character(seqnames(a2)), "=="), nrow=Nr, ncol=Nc))
+    expect_identical(is.intra, pairdist(x, type="intra"))
     
     ref <- abs(outer(start(a1)+end(a1), start(a2)+end(a2), "-"))
     ref <- ref/2L
     ref[!is.intra] <- NA
     storage.mode(ref) <- "integer"
-    expect_that(pairdist(x), is_identical_to(ref))
+    expect_identical(pairdist(x), ref)
                                                     
     ref <- abs(outer(anchors(x, type="row", id=TRUE), anchors(x, type="column", id=TRUE), "-"))
     ref[!is.intra] <- NA
     storage.mode(ref) <- "integer"
-    expect_that(pairdist(x, type="diag"), is_identical_to(ref))
+    expect_identical(pairdist(x, type="diag"), ref)
     
     as1 <- start(a1)
     as2 <- start(a2)
@@ -74,17 +74,17 @@ test_that("Paired distances are correct for CM objects", {
     ae2 <- end(a2)
     ref <- outer(as1, as2, pmax) - outer(ae1, ae2, pmin) - 1L
     ref[!is.intra] <- NA                    
-    expect_that(pairdist(x,type="gap"), is_identical_to(ref))
+    expect_identical(pairdist(x,type="gap"), ref)
     
     ref <- outer(ae1, ae2, pmax) - outer(as1, as2, pmin) + 1L
     ref[!is.intra] <- NA                    
-    expect_that(pairdist(x,type="span"), is_identical_to(ref))
+    expect_identical(pairdist(x,type="span"), ref)
     
     # Don't need to worry about NA's in 'x@matrix', they don't affect the calculation.
     # Still checking silly inputs, though:   
-    expect_that(pairdist(x[0,]), is_identical_to(matrix(0L, 0, Nc)))
-    expect_that(pairdist(x[,0], type="intra"), is_identical_to(matrix(FALSE, Nr, 0)))
+    expect_identical(pairdist(x[0,]), matrix(0L, 0, Nc))
+    expect_identical(pairdist(x[,0], type="intra"), matrix(FALSE, Nr, 0))
     is.ra <- which(seqnames(anchors(x, type="row"))=="chrA")
     is.cb <- which(seqnames(anchors(x, type="column"))=="chrB")
-    expect_that(pairdist(x[is.ra,is.cb]), is_identical_to(matrix(as.integer(NA), length(is.ra), length(is.cb))))
+    expect_identical(pairdist(x[is.ra,is.cb]), matrix(as.integer(NA), length(is.ra), length(is.cb)))
 })

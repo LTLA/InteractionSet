@@ -197,7 +197,7 @@ fixed=TRUE)
     lcchosen <- logical(ncol(x)); lcchosen[cchosen] <- TRUE
     expect_equal(xsub, x[lrchosen,lcchosen])
 
-    expect_that(assay(xsub), is_identical_to(assay(x)[rchosen,cchosen]))
+    expect_identical(assay(xsub), assay(x)[rchosen,cchosen])
     expect_identical(xsub$totals, x$totals[cchosen])
     expect_identical(interactions(xsub), interactions(x)[rchosen])
 

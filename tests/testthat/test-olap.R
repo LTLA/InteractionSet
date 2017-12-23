@@ -78,13 +78,13 @@ for (param in seq_len(6)) {
         }
        
         olap <- findOverlaps(x, query.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region)
-        expect_that(olap, is_identical_to(unique(sort(ref)))) 
+        expect_identical(olap, unique(sort(ref)))
 
         # Checking how it behaves with different 'select' specifications. 
         for (select in c("first", "last", "arbitrary")) { 
             selected <- findOverlaps(x, query.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, select=select, use.region=use.region)
             if (select!="arbitrary") {
-                expect_that(selected, is_identical_to(selectHits(olap, select)))
+                expect_identical(selected, selectHits(olap, select))
             } else {
                 is.okay <- !is.na(selected)
                 expect_identical(is.okay, !is.na(selectHits(olap, select)))
@@ -115,17 +115,17 @@ for (param in seq_len(6)) {
             rref <- rexpected2
         }
         
-        expect_that(rolap, is_identical_to(unique(sort(rref)))) 
+        expect_identical(rolap, unique(sort(rref)))
         if (type!="within") { 
             olap <- findOverlaps(x, query.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region)
-            expect_that(rolap, is_identical_to(t(olap))) 
+            expect_identical(rolap, t(olap))
         } 
    
         # Seeing how it behaves with 'select' 
         for (select in c("first", "last", "arbitrary")) { 
             selected <- findOverlaps(query.regions, x, type=type, maxgap=maxgap, minoverlap=minoverlap, select=select, use.region=use.region)
             if (select!="arbitrary") {
-                expect_that(selected, is_identical_to(selectHits(rolap, select)))
+                expect_identical(selected, selectHits(rolap, select))
             } else {
                 is.okay <- !is.na(selected)
                 expect_identical(is.okay, !is.na(selectHits(rolap, select)))
@@ -255,13 +255,13 @@ for (param in seq_len(6)) {
         ref <- sort(unique(ref))
         
         olap <- findOverlaps(x, x2, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region)
-        expect_that(olap, is_identical_to(ref))
+        expect_identical(olap, ref)
     
         # Checking 'select' arguments.
         for (select in c("first", "last", "arbitrary")) { 
             selected <- findOverlaps(x, x2, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region, select=select)
             if (select!="arbitrary") {
-                expect_that(selected, is_identical_to(selectHits(olap, select)))
+                expect_identical(selected, selectHits(olap, select))
             } else {
                 is.okay <- !is.na(selected)
                 expect_identical(is.okay, !is.na(selectHits(olap, select)))
@@ -309,13 +309,13 @@ for (param in seq_len(6)) {
         ref <- sort(unique(ref))
         
         self.olap <- findOverlaps(x, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region)
-        expect_that(self.olap, is_identical_to(ref))
+        expect_identical(self.olap, ref)
     
         # Checking the behaviour of 'select'.
         for (select in c("first", "last", "arbitrary")) { 
             selected <- findOverlaps(x, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region, select=select)
             if (select!="arbitrary") {
-                expect_that(selected, is_identical_to(selectHits(self.olap, select)))
+                expect_identical(selected, selectHits(self.olap, select))
             } else {
                 is.okay <- !is.na(selected)
                 expect_identical(is.okay, !is.na(selectHits(self.olap, select)))
