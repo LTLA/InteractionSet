@@ -305,7 +305,7 @@ for (param in seq_len(6)) {
     
         expected <- intersect(expected1, expected2)
         harvest <- do.call(rbind, strsplit(expected, "\\."))
-        ref <- Hits(as.integer(harvest[,1]), as.integer(harvest[,2]), nLnode=length(x), nRnode=length(x2), sort.by.query=TRUE)
+        ref <- SelfHits(as.integer(harvest[,1]), as.integer(harvest[,2]), nnode=length(x), sort.by.query=TRUE)
         ref <- sort(unique(ref))
         
         self.olap <- findOverlaps(x, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region)
