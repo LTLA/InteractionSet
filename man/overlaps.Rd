@@ -63,40 +63,6 @@ Find overlaps between interactions and linear intervals, between interactions an
 }
 
 \usage{
-\S4method{findOverlaps}{GInteractions,Vector}(query, subject, maxgap=-1L, minoverlap=0L,
-    type=c("any", "start", "end", "within", "equal"),
-    select=c("all", "first", "last", "arbitrary"),
-    ignore.strand=FALSE, use.region="both")
-
-\S4method{overlapsAny}{GInteractions,Vector}(query, subject, maxgap=-1L, minoverlap=0L,
-    type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=FALSE, use.region="both")
-
-\S4method{countOverlaps}{GInteractions,Vector}(query, subject, maxgap=-1L, minoverlap=0L,
-    type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=FALSE, use.region="both")
-
-\S4method{subsetByOverlaps}{GInteractions,Vector}(query, subject, maxgap=-1L, minoverlap=0L,
-    type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=FALSE, use.region="both")
-
-\S4method{findOverlaps}{Vector,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
-    type=c("any", "start", "end", "within", "equal"),
-    select=c("all", "first", "last", "arbitrary"),
-    ignore.strand=FALSE, use.region="both")
-
-\S4method{overlapsAny}{Vector,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
-    type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=FALSE, use.region="both")
-
-\S4method{countOverlaps}{Vector,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
-    type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=FALSE, use.region="both")
-
-\S4method{subsetByOverlaps}{Vector,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
-    type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=FALSE, use.region="both")
-
 \S4method{findOverlaps}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
     select=c("all", "first", "last", "arbitrary"),
@@ -113,18 +79,6 @@ Find overlaps between interactions and linear intervals, between interactions an
 \S4method{subsetByOverlaps}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
     ignore.strand=FALSE, use.region="both")
-
-\S4method{findOverlaps}{GInteractions,missing}(query, subject, maxgap=-1L, minoverlap=0L,
-    type=c("any", "start", "end", "within", "equal"),
-    select=c("all", "first", "last", "arbitrary"),
-    ignore.strand=FALSE, use.region="both")
-
-\S4method{countOverlaps}{GInteractions,missing}(query, subject, maxgap=-1L, minoverlap=0L,
-    type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=FALSE, use.region="both")
-
-# For brevity, only GInteractions methods are listed. However, all instances of 
-# GInteractions above can be replaced with InteractionSet objects.
 }
 
 \arguments{
@@ -156,11 +110,13 @@ For \code{subsetByOverlaps}, a subsetted object of the same class as \code{query
 }
 
 \section{Overview of overlaps for GInteractions}{
-For all methods taking a Vector and an GInteractions, the Vector is assumed to represent some region on the linear genome (e.g., GRanges) or set of such regions (GRangesList).
+All methods can be applied using a GInteractions as either the \code{query} or \code{subject}, and a Vector as the other argument.
+In such cases, the Vector is assumed to represent some region on the linear genome (e.g., GRanges) or set of such regions (GRangesList).
 An overlap will be defined between the interval and an GInteractions interaction if either anchor region of the latter overlaps the former.
 This is considered to be a one-dimensional overlap, i.e., on the linear genome.
 
-For methods between two GInteractions objects, a two-dimensional overlap will be computed between the anchor regions of the two objects.
+The same methods can be applied using two GInteractions objects as the \code{query} and \code{subject}.
+In such cases, a two-dimensional overlap will be computed between the anchor regions of the two objects.
 An overlap is defined if each anchor region of the first object overlaps at least one anchor region of the second object,
     and each anchor region of the second object overlaps at least one anchor region of the first object, i.e., there are overlapping areas in the two-dimensional interaction space. 
 If \code{subject} is missing, overlaps will be computed between interactions in \code{query}.
@@ -198,7 +154,7 @@ The latter two options tend only to be useful if the order of first/second regio
 }
 
 \section{Details for InteractionSet}{
-The behaviour of each method for InteractionSet objects is largely the same as that described for GInteractions objects.
+Each method can also be applied with InteractionSet objects, and the behaviour is largely the same as that described for GInteractions objects.
 For a given InteractionSet object \code{x}, the corresponding method is called on the GInteractions object in the \code{interactions} slot of \code{x}.
 The return value is identical to that from calling the method on \code{interactions(x)}, except for \code{subsetByOverlaps} for InteractionSet queries
     (which returns a subsetted InteractionSet object, containing only those rows/interactions overlapping the \code{subject}).

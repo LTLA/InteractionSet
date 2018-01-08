@@ -171,10 +171,16 @@ setMethod("findOverlaps", c(query="GInteractions", subject="missing"),
              ignore.strand=FALSE, use.region="both") {
         type <- match.arg(type)
         select <- match.arg(select)
+
         out <- findOverlaps(query, query, maxgap=maxgap, minoverlap=minoverlap, 
                             type=type, select=select, ignore.strand=ignore.strand,
                             use.region=use.region)
-        as(out, "SortedByQuerySelfHits")
+        
+        # If select="first", the output won't be a "Hits" and this will fail.
+        if (is(out, "Hits")) { 
+            out <- as(out, "SortedByQuerySelfHits")
+        }
+        return(out)
     }
 )
 
