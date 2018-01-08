@@ -289,7 +289,7 @@ setMethod("c", "GInteractions", function(x, ..., recursive=FALSE) { # synonym fo
 
     # Checking what to do with names.
     all.names <- lapply(args, FUN=names)
-    unnamed <- sapply(all.names, is.null)
+    unnamed <- vapply(all.names, is.null, FUN.VALUE=FALSE)
     if (!all(unnamed)) { 
         for (u in which(unnamed)) {
             all.names[[u]] <- character(length(args[[u]]))
