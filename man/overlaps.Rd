@@ -66,19 +66,19 @@ Find overlaps between interactions and linear intervals, between interactions an
 \S4method{findOverlaps}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
     select=c("all", "first", "last", "arbitrary"),
-    ..., use.region="both")
+    ignore.strand=TRUE, ..., use.region="both")
 
 \S4method{overlapsAny}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
-    ..., use.region="both")
+    ignore.strand=TRUE, ..., use.region="both")
 
 \S4method{countOverlaps}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
-    ..., use.region="both")
+    ignore.strand=TRUE, ..., use.region="both")
 
 \S4method{subsetByOverlaps}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
-    ..., use.region="both")
+    ignore.strand=TRUE, ..., use.region="both")
 }
 
 \arguments{
@@ -88,14 +88,18 @@ Find overlaps between interactions and linear intervals, between interactions an
     Also, \code{subject} can be missing if \code{query} is a GInteractions or InteractionSet object.
 }
 
-\item{maxgap, minoverlap}{
+\item{maxgap, minoverlap, type, select}{
     See \code{?\link[GenomicRanges]{findOverlaps}} in the \pkg{GenomicRanges} package.
 }
 
-\item{type, select, ...}{
-    See \code{?\link[GenomicRanges]{findOverlaps}} in the \pkg{GenomicRanges} package.
+\item{ignore.strand}{
+A logical scalar indicating whether strand information in \code{query} or \code{subject} should be ignored.
+Note that the default setting here is different to that in \code{\link[GenomicRanges]{findOverlaps}} as genomic interactions are usually unstranded.
 }
-
+\item{...}{
+Further arguments to pass to \code{\link[GenomicRanges]{findOverlaps}}.
+This includes \code{drop.self} and \code{drop.redundant} when \code{subject} is missing.
+}
 \item{use.region}{
 A string specifying the regions to be used to identify overlaps.
 }
