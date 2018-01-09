@@ -66,19 +66,19 @@ Find overlaps between interactions and linear intervals, between interactions an
 \S4method{findOverlaps}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
     select=c("all", "first", "last", "arbitrary"),
-    ignore.strand=FALSE, use.region="both")
+    ..., use.region="both")
 
 \S4method{overlapsAny}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=FALSE, use.region="both")
+    ..., use.region="both")
 
 \S4method{countOverlaps}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=FALSE, use.region="both")
+    ..., use.region="both")
 
 \S4method{subsetByOverlaps}{GInteractions,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=FALSE, use.region="both")
+    ..., use.region="both")
 }
 
 \arguments{
@@ -88,11 +88,11 @@ Find overlaps between interactions and linear intervals, between interactions an
     Also, \code{subject} can be missing if \code{query} is a GInteractions or InteractionSet object.
 }
 
-\item{maxgap, minoverlap, type}{
+\item{maxgap, minoverlap}{
     See \code{?\link[GenomicRanges]{findOverlaps}} in the \pkg{GenomicRanges} package.
 }
 
-\item{select, ignore.strand}{
+\item{type, select, ...}{
     See \code{?\link[GenomicRanges]{findOverlaps}} in the \pkg{GenomicRanges} package.
 }
 
