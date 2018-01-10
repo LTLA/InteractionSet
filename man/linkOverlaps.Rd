@@ -1,10 +1,15 @@
 \name{linkOverlaps}
 \alias{linkOverlaps}
 
-\alias{linkOverlaps,GInteractions,GRanges,GRanges-method}
-\alias{linkOverlaps,InteractionSet,GRanges,GRanges-method}
-\alias{linkOverlaps,GInteractions,GRanges,missing-method}
-\alias{linkOverlaps,InteractionSet,GRanges,missing-method}
+\alias{linkOverlaps,GInteractions,Vector,Vector-method}
+\alias{linkOverlaps,InteractionSet,Vector,Vector-method}
+\alias{linkOverlaps,GInteractions,Vector,missing-method}
+\alias{linkOverlaps,InteractionSet,Vector,missing-method}
+
+\alias{linkOverlaps,GInteractions,Hits,Hits-method}
+\alias{linkOverlaps,InteractionSet,Hits,Hits-method}
+\alias{linkOverlaps,GInteractions,Hits,missing-method}
+\alias{linkOverlaps,InteractionSet,Hits,missing-method}
 
 \title{Link overlapping regions}
 
@@ -13,18 +18,18 @@ Identify interactions that link two sets of regions by having anchor regions ove
 }
 
 \usage{
-\S4method{linkOverlaps}{GInteractions,GRanges,GRanges}(query, subject1, subject2, ..., use.region="both")
-\S4method{linkOverlaps}{GInteractions,GRanges,missing}(query, subject1, subject2, ..., use.region="both")
+\S4method{linkOverlaps}{GInteractions,Vector,Vector}(query, subject1, subject2, ..., use.region="both")
 
-# The same methods apply for InteractionSet objects as 'query'.
+\S4method{linkOverlaps}{GInteractions,Vector,missing}(query, subject1, subject2, ..., use.region="both")
 }
 
 \arguments{
 \item{query}{A GInteractions or InteractionSet object.}
 
-\item{subject1, subject2}{A GRanges object.}
-
-\item{...}{Additional arguments to be passed to \code{\link{findOverlaps}}.}
+\item{subject1, subject2}{A Vector object defining a set of genomic intervals, such as a GRanges or GRangesList.
+Alternatively, both \code{subject1} and \code{subject2} may be Hits objects, see below.}
+ 
+\item{...}{Additional arguments to be passed to \code{\link[GenomicRanges]{findOverlaps}}.}
 
 \item{use.region}{
 A string specifying which \code{query} regions should be used to overlap which \code{subject}.
@@ -38,7 +43,7 @@ It is designed to be used to identify regions that are linked by interactions in
 For example, one might specify genes as \code{subject1} and enhancers as \code{subject2}, to identify all gene-enhancer contacts present in \code{query}.
 This is useful when the exact pairings between \code{subject1} and \code{subject2} are undefined.
 
-The function returns a dataframe specifying the index of the interaction in \code{query}; the index of the overlapped region in \code{subject1};
+The function returns a DataFrame specifying the index of the interaction in \code{query}; the index of the overlapped region in \code{subject1};
     and the index of the overlapped region in \code{subject2}.
 If multiple regions in \code{subject1} and/or \code{subject2} are overlapping the anchor regions of a particular interaction,
     all combinations of two overlapping regions (one from each \code{subject*} set) are reported for that interaction.
@@ -49,11 +54,28 @@ If \code{use.region="same"}, overlaps will only be considered between the first 
 The opposite applies with \code{use.region="reverse"}, where the first and second interacting regions are overlapped with \code{subject2} and \code{subject1} respectively.
 
 If \code{subject2} is not specified, links within \code{subject1} are identified instead, i.e., \code{subject2} is set to \code{subject1}.
-In such cases, the returned dataframe is such that the first subject index is always greater than the second subject index, to avoid redundant permutations.
+In such cases, the returned DataFrame is such that the first subject index is always greater than the second subject index, to avoid redundant permutations.
+}
+
+\section{Using Hits as input}{
+Hits objects can be used for the \code{subject1} and \code{subject2} arguments.
+These should be constructed using \code{\link[GenomicRanges]{findOverlaps}} with \code{regions(query)} as the query and the genomic regions of interest as the subject. 
+For example, the calls below:
+\preformatted{> linkOverlaps(query, subject1) # 1
+> linkOverlaps(query, subject1, subject2) # 2}
+
+will yield exactly the same output as:
+\preformatted{> olap1 <- findOverlaps(regions(query), subject1)
+> linkOverlaps(query, olap1) # 1
+> olap2 <- findOverlaps(regions(query), subject2)
+> linkOverlaps(query, olap1, olap2) # 2}
+
+This is useful in situations where \code{regions(query)} and the genomic regions in \code{subject1} and \code{subject2} are constant across multiple calls to \code{linkOverlaps}.
+In such cases, the overlaps only need to be calculated once, avoiding redundant work within \code{linkOverlaps}.
 }
 
 \value{
-A dataframe of integer indices indicating which elements of \code{query} link which elements of \code{subject1} and \code{subject2}.
+A DataFrame of integer indices indicating which elements of \code{query} link which elements of \code{subject1} and \code{subject2}.
 }
 
 \seealso{

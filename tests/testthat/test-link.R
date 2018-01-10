@@ -66,23 +66,29 @@ for (cls in 1:2) {
             } else {
                 combo <- combo2
             }
+
+            combo <- DataFrame(combo)
             colnames(combo) <- c("query", "subject1", "subject2")
+            rownames(combo) <- NULL
+
             is.dup <- duplicated(paste0(combo$query, ".", combo$subject1, ".", combo$subject2))
             combo <- combo[!is.dup,]
             o <- order(combo$query, combo$subject1, combo$subject2)
             combo <- combo[o,]
-            rownames(combo) <- NULL
     
             expect_identical(combo, linkOverlaps(obj, gene.regions, enh.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region))
         })
 
         test_that(sprintf("linking overlaps works between the same regions (%i, %i)", cls, param), {
-            # More manually mergin, but just with the gene regions.
+            # More manually merging, but just with the gene regions.
             olap1.g <- findOverlaps(anchors(obj, type="first"), gene.regions, maxgap=maxgap, minoverlap=minoverlap, type=type)
             olap2.g <- findOverlaps(anchors(obj, type="second"), gene.regions, maxgap=maxgap, minoverlap=minoverlap, type=type)
 
             combo.S <- base::merge(olap1.g, olap2.g, by.x=1, by.y=1)
+            combo.S <- DataFrame(combo.S)
             colnames(combo.S) <- c("query", "subject1", "subject2")
+            rownames(combo.S) <- NULL
+
             new.s1 <- pmax(combo.S$subject1, combo.S$subject2)
             new.s2 <- pmin(combo.S$subject1, combo.S$subject2)
             combo.S$subject1 <- new.s1
@@ -92,17 +98,32 @@ for (cls in 1:2) {
             combo.S <- combo.S[!is.dup,]
             o <- order(combo.S$query, combo.S$subject1, combo.S$subject2)
             combo.S <- combo.S[o,]
-            rownames(combo.S) <- NULL
     
             expect_identical(combo.S, linkOverlaps(obj, gene.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region))
+        })
+
+        test_that(sprintf("linking overlaps works with Hits (%i, %i)", cls, param), {
+            ref1 <- linkOverlaps(obj, gene.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region)
+            olap1 <- findOverlaps(regions(obj), gene.regions, type=type, maxgap=maxgap, minoverlap=minoverlap)
+            expect_identical(ref1, linkOverlaps(obj, olap1, use.region=use.region))
+            
+            ref2 <- linkOverlaps(obj, gene.regions, enh.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region)
+            olap2 <- findOverlaps(regions(obj), enh.regions, type=type, maxgap=maxgap, minoverlap=minoverlap,)
+            expect_identical(ref2, linkOverlaps(obj, olap1, olap2, use.region=use.region))
         })
     }
 
     # Testing against empty slots.
     test_that("linking overlaps behaves with empty inputs", {
-        expect_identical(data.frame(query=integer(0), subject1=integer(0), subject2=integer(0)), linkOverlaps(obj, gene.regions[0], gene.regions))
-        expect_identical(data.frame(query=integer(0), subject1=integer(0), subject2=integer(0)), linkOverlaps(obj, gene.regions, gene.regions[0]))
-        expect_identical(data.frame(query=integer(0), subject1=integer(0), subject2=integer(0)), linkOverlaps(obj, gene.regions[0], gene.regions[0]))
+        expect_identical(DataFrame(query=integer(0), subject1=integer(0), subject2=integer(0)), linkOverlaps(obj, gene.regions[0], gene.regions))
+        expect_identical(DataFrame(query=integer(0), subject1=integer(0), subject2=integer(0)), linkOverlaps(obj, gene.regions, gene.regions[0]))
+        expect_identical(DataFrame(query=integer(0), subject1=integer(0), subject2=integer(0)), linkOverlaps(obj, gene.regions[0], gene.regions[0]))
+
+        expect_error(linkOverlaps(obj, Hits()), "'nLnode' of 'subject1'")
+        okay.hits <- Hits(nLnode=length(regions(obj)))
+        expect_identical(DataFrame(query=integer(0), subject1=integer(0), subject2=integer(0)), linkOverlaps(obj, okay.hits))
+        expect_error(linkOverlaps(obj, okay.hits, Hits()), "'nLnode' of 'subject2'")
+        expect_identical(DataFrame(query=integer(0), subject1=integer(0), subject2=integer(0)), linkOverlaps(obj, okay.hits, okay.hits))
     })
 }
 
