@@ -18,18 +18,19 @@ Identify interactions that link two sets of regions by having anchor regions ove
 }
 
 \usage{
-\S4method{linkOverlaps}{GInteractions,Vector,Vector}(query, subject1, subject2, ..., use.region="both")
-
-\S4method{linkOverlaps}{GInteractions,Vector,missing}(query, subject1, subject2, ..., use.region="both")
+\S4method{linkOverlaps}{GInteractions,Vector,Vector}(query, subject1, subject2, ..., 
+    ignore.strand=TRUE, use.region="both")
 }
 
 \arguments{
 \item{query}{A GInteractions or InteractionSet object.}
 
 \item{subject1, subject2}{A Vector object defining a set of genomic intervals, such as a GRanges or GRangesList.
+\code{subject2} may be missing.
 Alternatively, both \code{subject1} and \code{subject2} may be Hits objects, see below.}
  
-\item{...}{Additional arguments to be passed to \code{\link[GenomicRanges]{findOverlaps}}.}
+\item{..., ignore.strand}{Additional arguments to be passed to \code{\link[GenomicRanges]{findOverlaps}}.
+Note that \code{ignore.strand=TRUE} by default, as genomic interactions are usually unstranded.}
 
 \item{use.region}{
 A string specifying which \code{query} regions should be used to overlap which \code{subject}.

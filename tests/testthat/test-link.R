@@ -5,11 +5,12 @@ set.seed(9000)
 N <- 30
 all.starts <- round(runif(N, 1, 100))
 all.ends <- all.starts + round(runif(N, 5, 20))
-all.regions <- GRanges(rep(c("chrA", "chrB"), c(N-10, 10)), IRanges(all.starts, all.ends))
+all.strand <- sample(c("*", "+", "-"), N, replace=TRUE)
+all.regions <- GRanges(rep(c("chrA", "chrB"), c(N-10, 10)), IRanges(all.starts, all.ends), strand=all.strand)
 
-Np <- 20
-all.anchor1 <- sample(N, Np)
-all.anchor2 <- sample(N, Np)
+Np <- 100
+all.anchor1 <- sample(N, Np, replace=TRUE)
+all.anchor2 <- sample(N, Np, replace=TRUE)
 x <- GInteractions(all.anchor1, all.anchor2, all.regions)
 
 # Generating some random regions to test against.
@@ -17,12 +18,14 @@ x <- GInteractions(all.anchor1, all.anchor2, all.regions)
 Ngenes <- 10
 gene.starts <- round(runif(Ngenes, 1, 100))
 gene.ends <- gene.starts + round(runif(Ngenes, 5, 20))
-gene.regions <- GRanges(rep(c("chrA", "chrB"), Ngenes/2), IRanges(gene.starts, gene.ends))
+gene.strand <- sample(c("*", "+", "-"), Ngenes, replace=TRUE)
+gene.regions <- GRanges(rep(c("chrA", "chrB"), Ngenes/2), IRanges(gene.starts, gene.ends), strand=gene.strand)
 
-Nenh <- 4
+Nenh <- 8
 enh.starts <- round(runif(Nenh, 1, 100))
 enh.ends <- enh.starts + round(runif(Nenh, 5, 20))
-enh.regions <- GRanges(rep(c("chrA", "chrB"), Nenh/2), IRanges(enh.starts, enh.ends))
+enh.strand <- sample(c("*", "+", "-"), Nenh, replace=TRUE)
+enh.regions <- GRanges(rep(c("chrA", "chrB"), Nenh/2), IRanges(enh.starts, enh.ends), strand=enh.strand)
 
 # Testing for ISets and GIs, in a range of scenarios.
 
@@ -33,11 +36,13 @@ for (cls in 1:2) {
         obj <- InteractionSet(matrix(0, Np, 4, dimnames=list(NULL, seq_len(4))), x)
     }
     
-    for (param in seq_len(6)) {
+    for (param in seq_len(7)) {
         type <- "any"
         maxgap <- -1L
         minoverlap <- 0L
         use.region <- "both"
+        ignore.strand <- TRUE
+
         if (param==2L) { 
             maxgap <- 10L
         } else if (param==3L) {
@@ -48,14 +53,16 @@ for (cls in 1:2) {
             use.region <- "same"
         } else if (param==6L) {
             use.region <- "reverse"
+        } else if (param==7L) {
+            ignore.strand <- FALSE
         }
 
         test_that(sprintf("linking overlaps works between two regions (%i, %i)", cls, param), {
             # Getting the reference results by doing it manually via 'merge'.
-            olap1.g <- findOverlaps(anchors(obj, type="first"), gene.regions, maxgap=maxgap, minoverlap=minoverlap, type=type)
-            olap2.g <- findOverlaps(anchors(obj, type="second"), gene.regions, maxgap=maxgap, minoverlap=minoverlap, type=type)
-            olap1.e <- findOverlaps(anchors(obj, type="first"), enh.regions, maxgap=maxgap, minoverlap=minoverlap, type=type)
-            olap2.e <- findOverlaps(anchors(obj, type="second"), enh.regions, maxgap=maxgap, minoverlap=minoverlap, type=type)
+            olap1.g <- findOverlaps(anchors(obj, type="first"), gene.regions, maxgap=maxgap, minoverlap=minoverlap, ignore.strand=ignore.strand, type=type)
+            olap2.g <- findOverlaps(anchors(obj, type="second"), gene.regions, maxgap=maxgap, minoverlap=minoverlap, ignore.strand=ignore.strand, type=type)
+            olap1.e <- findOverlaps(anchors(obj, type="first"), enh.regions, maxgap=maxgap, minoverlap=minoverlap, ignore.strand=ignore.strand, type=type)
+            olap2.e <- findOverlaps(anchors(obj, type="second"), enh.regions, maxgap=maxgap, minoverlap=minoverlap, ignore.strand=ignore.strand, type=type)
 
             combo1 <- base::merge(olap1.g, olap2.e, by.x=1, by.y=1)
             combo2 <- base::merge(olap2.g, olap1.e, by.x=1, by.y=1)
@@ -76,13 +83,14 @@ for (cls in 1:2) {
             o <- order(combo$query, combo$subject1, combo$subject2)
             combo <- combo[o,]
     
-            expect_identical(combo, linkOverlaps(obj, gene.regions, enh.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region))
+            expect_identical(combo, linkOverlaps(obj, gene.regions, enh.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, 
+                                                 ignore.strand=ignore.strand, use.region=use.region))
         })
 
         test_that(sprintf("linking overlaps works between the same regions (%i, %i)", cls, param), {
             # More manually merging, but just with the gene regions.
-            olap1.g <- findOverlaps(anchors(obj, type="first"), gene.regions, maxgap=maxgap, minoverlap=minoverlap, type=type)
-            olap2.g <- findOverlaps(anchors(obj, type="second"), gene.regions, maxgap=maxgap, minoverlap=minoverlap, type=type)
+            olap1.g <- findOverlaps(anchors(obj, type="first"), gene.regions, maxgap=maxgap, minoverlap=minoverlap, ignore.strand=ignore.strand, type=type)
+            olap2.g <- findOverlaps(anchors(obj, type="second"), gene.regions, maxgap=maxgap, minoverlap=minoverlap, ignore.strand=ignore.strand, type=type)
 
             combo.S <- base::merge(olap1.g, olap2.g, by.x=1, by.y=1)
             combo.S <- DataFrame(combo.S)
@@ -99,18 +107,34 @@ for (cls in 1:2) {
             o <- order(combo.S$query, combo.S$subject1, combo.S$subject2)
             combo.S <- combo.S[o,]
     
-            expect_identical(combo.S, linkOverlaps(obj, gene.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region))
+            expect_identical(combo.S, linkOverlaps(obj, gene.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, 
+                                                   ignore.strand=ignore.strand, use.region=use.region))
         })
 
         test_that(sprintf("linking overlaps works with Hits (%i, %i)", cls, param), {
-            ref1 <- linkOverlaps(obj, gene.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region)
-            olap1 <- findOverlaps(regions(obj), gene.regions, type=type, maxgap=maxgap, minoverlap=minoverlap)
+            ref1 <- linkOverlaps(obj, gene.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region, ignore.strand=ignore.strand)
+            olap1 <- findOverlaps(regions(obj), gene.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, ignore.strand=ignore.strand)
             expect_identical(ref1, linkOverlaps(obj, olap1, use.region=use.region))
             
-            ref2 <- linkOverlaps(obj, gene.regions, enh.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region)
-            olap2 <- findOverlaps(regions(obj), enh.regions, type=type, maxgap=maxgap, minoverlap=minoverlap,)
+            ref2 <- linkOverlaps(obj, gene.regions, enh.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, use.region=use.region, ignore.strand=ignore.strand)
+            olap2 <- findOverlaps(regions(obj), enh.regions, type=type, maxgap=maxgap, minoverlap=minoverlap, ignore.strand=ignore.strand)
             expect_identical(ref2, linkOverlaps(obj, olap1, olap2, use.region=use.region))
         })
+
+        if (!ignore.strand) {
+            # Just checking that ignore.strand works as expected.
+            test_that("linkOverlaps works as expected without strandedness", {
+                olap1 <- linkOverlaps(obj, gene.regions, ignore.strand=TRUE)
+                olap2 <- linkOverlaps(obj, gene.regions, enh.regions, ignore.strand=TRUE)
+
+                strand(regions(obj)) <- "*"
+                strand(gene.regions) <- "*"
+                strand(enh.regions) <- "*"
+
+                expect_identical(olap1, linkOverlaps(obj, gene.regions, ignore.strand=FALSE))
+                expect_identical(olap2, linkOverlaps(obj, gene.regions, enh.regions, ignore.strand=FALSE))
+           })
+        }
     }
 
     # Testing against empty slots.

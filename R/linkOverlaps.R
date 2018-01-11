@@ -2,12 +2,12 @@
 # to link any two sets of regions together; to figure out which ones are
 # linked, and to identify the interactions linking them.
 
-.linkOverlap <- function(query, subject1, subject2, ..., use.region="both") {
+.linkOverlap <- function(query, subject1, subject2, ..., ignore.strand=TRUE, use.region="both") {
     a1 <- anchors(query, id=TRUE, type="first")
     a2 <- anchors(query, id=TRUE, type="second")
     nregs <- length(regions(query))
 
-    olap1 <- .fast_overlap(query, subject1, ..., gi.is.query=TRUE)
+    olap1 <- .fast_overlap(query, subject1, ..., ignore.strand=ignore.strand, gi.is.query=TRUE)
     bounds1 <- .get_olap_bounds(olap1$gi.dex, nregs)
     nregs1 <- length(subject1)
     if (missing(subject2)) { 
@@ -16,7 +16,7 @@
         is.same <- TRUE
         nregs2 <- nregs1
     } else {
-        olap2 <- .fast_overlap(query, subject2, ..., gi.is.query=TRUE)
+        olap2 <- .fast_overlap(query, subject2, ..., ignore.strand=ignore.strand, gi.is.query=TRUE)
         bounds2 <- .get_olap_bounds(olap2$gi.dex, nregs)
         is.same <- FALSE
         nregs2 <- length(subject2)
