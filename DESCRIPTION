@@ -1,27 +1,27 @@
 Package: InteractionSet
-Version: 1.7.4
-Date: 2018-01-10
+Version: 1.7.5
+Date: 2018-01-13
 Title: Base Classes for Storing Genomic Interaction Data
 Author: Aaron Lun <alun@wehi.edu.au>, Malcolm Perry <mgperry32@gmail.com>,
-        Liz Ing-Simmons <liz.ing-simmons12@csc.mrc.ac.uk> 
+        Liz Ing-Simmons <liz.ing-simmons12@csc.mrc.ac.uk>
 Maintainer: Aaron Lun <alun@wehi.edu.au>
 Depends: R (>= 3.5), GenomicRanges, SummarizedExperiment
-Imports: IRanges, S4Vectors (>= 0.17.16), GenomeInfoDb, BiocGenerics, 
+Imports: IRanges, S4Vectors (>= 0.17.20), GenomeInfoDb, BiocGenerics,
         methods, Matrix, Rcpp
 Suggests: testthat, knitr, rmarkdown, BiocStyle
 LinkingTo: Rcpp
 biocViews: Infrastructure, DataRepresentation, Software, HiC
 Description: Provides the GInteractions, InteractionSet and ContactMatrix
-        objects and associated methods for storing and manipulating genomic 
+        objects and associated methods for storing and manipulating genomic
         interaction data from Hi-C and ChIA-PET experiments.
 License: GPL-3
 NeedsCompilation: yes
 SystemRequirements: C++11
 VignetteBuilder: knitr
-Collate: AllGenerics.R AllClasses.R 
-        ContactMatrix-methods.R GInteractions-methods.R 
+Collate: AllGenerics.R AllClasses.R
+        ContactMatrix-methods.R GInteractions-methods.R
         InteractionSet-methods.R GRanges-methods.R
-        getset.R swapAnchors.R 
-        pairs.R conversion.R linearize.R 
-        boundingBox.R distances.R 
-        overlaps.R linkOverlaps.R matching.R 
+        getset.R swapAnchors.R
+        pairs.R conversion.R linearize.R
+        boundingBox.R distances.R
+        overlaps.R linkOverlaps.R matching.R
