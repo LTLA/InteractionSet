@@ -270,32 +270,51 @@ setMethod("GInteractions", c("missing", "missing", "GenomicRanges_OR_missing"),
 })
 
 ###############################################################
-# Combining
+# Concatenation
 
-setMethod("c", "GInteractions", function(x, ..., recursive=FALSE) { # synonym for 'rbind'.
-    args <- unname(list(x, ...))
-    ans <- args[[1]]
-    all.regions <- lapply(args, FUN=regions)
-    all.anchor1 <- lapply(args, FUN=anchor1)
-    all.anchor2 <- lapply(args, FUN=anchor2)
-    all.mcols <- lapply(args, FUN=mcols)
+setMethod("concatenateObjects", "GInteractions",
+  function(x, objects=list(), use.names=TRUE, ignore.mcols=FALSE, check=TRUE) {
+    objects <- S4Vectors:::prepare_objects_to_concatenate(x, objects)
+    all.objects <- c(list(x), objects)
+    ans <- x
 
     # Checking if regions are the same; collating if not.
+    all.regions <- lapply(all.objects, FUN=regions)
+    all.anchor1 <- lapply(all.objects, FUN=anchor1)
+    all.anchor2 <- lapply(all.objects, FUN=anchor2)
     unified <- .coerce_to_union(all.regions, all.anchor1, all.anchor2)
     unchecked_regions(ans) <- unified$region
     unchecked_anchor1(ans) <- unlist(unified$anchor1)
     unchecked_anchor2(ans) <- unlist(unified$anchor2)
-    mcols(ans) <- do.call(rbind, all.mcols)
 
-    # Checking what to do with names.
-    all.names <- lapply(args, FUN=names)
-    unnamed <- vapply(all.names, is.null, FUN.VALUE=FALSE)
-    if (!all(unnamed)) { 
-        for (u in which(unnamed)) {
-            all.names[[u]] <- character(length(args[[u]]))
+    # Take care of the names.
+    ans_names <- NULL
+    if (use.names) {
+        all.names <- lapply(all.objects, FUN=names)
+        unnamed <- vapply(all.names, is.null, FUN.VALUE=FALSE)
+        if (!all(unnamed)) {
+            for (u in which(unnamed)) {
+                all.names[[u]] <- character(length(all.objects[[u]]))
+            }
+            ans_names <- unlist(all.names)
         }
-        names(ans) <- unlist(all.names)
     }
+
+    # Take care of the metadata columns.
+    if (ignore.mcols) {
+        ans_mcols <- new("DataFrame", nrows=length(ans))
+    } else {
+        all.mcols <- lapply(all.objects, FUN=mcols)
+        # Note that rbind() will fail if some mcols are NULL, which the
+        # the GInteractions class def seems to allow. Would be safer to
+        # set the type of the 'elementMetadata' slot to DataFrame, like
+        # for GenomicRanges derivatives. -- H.P.
+        ans_mcols <- do.call(rbind, all.mcols)
+    }
+
+    ans <- BiocGenerics:::replaceSlots(ans, NAMES=ans_names,
+                                            elementMetadata=ans_mcols,
+                                            check=check)
 
     # Coerce to the same strictness, if different inputs were supplied.
     if (is(ans, "StrictGInteractions")) { 

@@ -6,7 +6,7 @@ Author: Aaron Lun <alun@wehi.edu.au>, Malcolm Perry <mgperry32@gmail.com>,
         Liz Ing-Simmons <liz.ing-simmons12@csc.mrc.ac.uk>
 Maintainer: Aaron Lun <alun@wehi.edu.au>
 Depends: R (>= 3.5), GenomicRanges, SummarizedExperiment
-Imports: IRanges, S4Vectors (>= 0.17.20), GenomeInfoDb, BiocGenerics,
+Imports: IRanges, S4Vectors (>= 0.17.21), GenomeInfoDb, BiocGenerics,
         methods, Matrix, Rcpp
 Suggests: testthat, knitr, rmarkdown, BiocStyle
 LinkingTo: Rcpp
