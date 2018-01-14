@@ -263,8 +263,16 @@ test_that("subsetting works for GI objects", {
     expect_identical(length(x[0,]), 0L)
     expect_identical(length(x[0]), 0L)
     expect_error(x[,1], "subscript contains out-of-bounds indices")
+
+    # Subsetting by mcols works as expected.
     mcols(x)$stuff <- runif(length(x))
     expect_identical(x[,1], x)
+
+    alt.x <- x
+    mcols(alt.x)$whee <- runif(length(x))
+    mcols(x)$stuff <- NULL
+    mcols(x)$whee <- mcols(alt.x)$whee
+    expect_identical(alt.x[,2], x)
     expect_error(x[,,1], "invalid subsetting")
 })
 
