@@ -22,7 +22,8 @@ setClass("GInteractions",
         anchor1="integer",
         anchor2="integer",
         regions="GRanges",
-        NAMES="character_OR_NULL"
+        NAMES="character_OR_NULL",
+        elementMetadata="DataFrame"
     )
 )
 
