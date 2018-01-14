@@ -305,10 +305,6 @@ setMethod("concatenateObjects", "GInteractions",
         ans_mcols <- new("DataFrame", nrows=length(ans))
     } else {
         all.mcols <- lapply(all.objects, FUN=mcols)
-        # Note that rbind() will fail if some mcols are NULL, which the
-        # the GInteractions class def seems to allow. Would be safer to
-        # set the type of the 'elementMetadata' slot to DataFrame, like
-        # for GenomicRanges derivatives. -- H.P.
         ans_mcols <- do.call(rbind, all.mcols)
     }
 
