@@ -368,6 +368,13 @@ test_that("combining works for GI obejcts", {
     expect_identical(anchors(double.up, type="first"), rep(anchors(x, type="first"), 2))
     expect_identical(anchors(double.up, type="second"), rep(anchors(x, type="second"), 2))
     expect_identical(double.up$score, rep(temp.x$score, 2))
+
+    # Plus names.
+    temp.x <- temp.x2 <- x
+    names(temp.x) <- paste0("Inter", seq_along(temp.x))
+    names(temp.x2) <- paste0("Whee", seq_along(temp.x2))
+    combined <- c(temp.x, temp.x2)
+    expect_identical(names(combined), c(names(temp.x), names(temp.x2)))
 })
 
 ######################################
@@ -600,7 +607,7 @@ test_that("combining GI objects of different strictness", {
     expect_identical(c(x, sx, rsx), as(c(x, swapAnchors(x), swapAnchors(x, mode="reverse")), "GInteractions"))
     expect_identical(c(sx, rsx, x), as(c(x, x, x), "StrictGInteractions"))
 
-    # Checking for correct coercions. 
+    # Checking for correct coercions between Strict subclasses. 
     expect_identical(rsx, as(sx, "ReverseStrictGInteractions"))
     expect_identical(sx, as(rsx, "StrictGInteractions"))
 })
