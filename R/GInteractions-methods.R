@@ -276,9 +276,14 @@ setMethod("concatenateObjects", "GInteractions",
   function(x, objects=list(), use.names=TRUE, ignore.mcols=FALSE, check=TRUE) {
     objects <- S4Vectors:::prepare_objects_to_concatenate(x, objects)
     all.objects <- c(list(x), objects)
-    ans <- x
 
-    # Checking if regions are the same; collating if not.
+    # Taken from XVector:::concatenate_XVectorList_objects. Note that the 
+    # object may not be valid at this point due to anchor1/anchor2
+    # reordering for the Strict subclasses, hence check=FALSE.
+    ans <- callNextMethod(x, objects, use.names=use.names,
+                          ignore.mcols=ignore.mcols, check=FALSE)
+
+    # Coercing everyone to the same region set.
     all.regions <- lapply(all.objects, FUN=regions)
     all.anchor1 <- lapply(all.objects, FUN=anchor1)
     all.anchor2 <- lapply(all.objects, FUN=anchor2)
@@ -287,36 +292,10 @@ setMethod("concatenateObjects", "GInteractions",
     unchecked_anchor1(ans) <- unlist(unified$anchor1)
     unchecked_anchor2(ans) <- unlist(unified$anchor2)
 
-    # Take care of the names.
-    ans_names <- NULL
-    if (use.names) {
-        all.names <- lapply(all.objects, FUN=names)
-        unnamed <- vapply(all.names, is.null, FUN.VALUE=FALSE)
-        if (!all(unnamed)) {
-            for (u in which(unnamed)) {
-                all.names[[u]] <- character(length(all.objects[[u]]))
-            }
-            ans_names <- unlist(all.names)
-        }
-    }
-
-    # Take care of the metadata columns.
-    if (ignore.mcols) {
-        ans_mcols <- new("DataFrame", nrows=length(ans))
-    } else {
-        all.mcols <- lapply(all.objects, FUN=mcols)
-        ans_mcols <- do.call(rbind, all.mcols)
-    }
-
-    ans <- BiocGenerics:::replaceSlots(ans, NAMES=ans_names,
-                                            elementMetadata=ans_mcols,
-                                            check=check)
-
     # Coerce to the same strictness, if different inputs were supplied.
-    if (is(ans, "StrictGInteractions")) { 
-        ans <- swapAnchors(ans, mode="order")
-    } else if (is(ans, "ReverseStrictGInteractions")) { 
-        ans <- swapAnchors(ans, mode="reverse")
+    ans <- as(ans, class(x))
+    if (check) {
+        validObject(ans)
     }
     return(ans)
 })
