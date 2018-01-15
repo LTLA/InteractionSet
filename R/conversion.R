@@ -140,16 +140,20 @@ setMethod("deflate", "ContactMatrix", function(x, collapse=TRUE, extract, use.ze
 # Convert between GInteractions objects of different strictness.
 
 setAs("GInteractions", "StrictGInteractions", function(from) {
-    old_val <- S4Vectors:::disableValidity() # just in case we convert from reverse to strict.
-    on.exit(S4Vectors:::disableValidity(old_val))
-    S4Vectors:::disableValidity(TRUE)
-    new("StrictGInteractions", swapAnchors(from, mode="order"))
+    new("StrictGInteractions", .relaxed_strictness_converter(from, mode="order"))
 })
 
 setAs("GInteractions", "ReverseStrictGInteractions", function(from) {
-    old_val <- S4Vectors:::disableValidity()
-    on.exit(S4Vectors:::disableValidity(old_val))
-    S4Vectors:::disableValidity(TRUE)
-    new("ReverseStrictGInteractions", swapAnchors(from, mode="reverse"))
+    new("ReverseStrictGInteractions", .relaxed_strictness_converter(from, mode="reverse"))
 })
 
+.relaxed_strictness_converter <- function(from, mode) {
+    # Disabling the validity, just in case we convert from reverse to strict,
+    # which would trigger failure of the validObject() in swapAnchors().
+    old_val <- S4Vectors:::disableValidity() 
+    if (!old_val) { 
+        on.exit(S4Vectors:::disableValidity(old_val))
+        S4Vectors:::disableValidity(TRUE)
+    }
+    swapAnchors(from, mode=mode)
+}

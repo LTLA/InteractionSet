@@ -293,11 +293,13 @@ setMethod("concatenateObjects", "GInteractions",
     unchecked_anchor2(ans) <- unlist(unified$anchor2)
 
     # Coerce to the same strictness, if different inputs were supplied.
-    ans <- as(ans, class(x))
-    if (check) {
-        validObject(ans)
+    # We need to decide whether or not to trigger the validObject() in the new() inside as().
+    old_val <- S4Vectors:::disableValidity() 
+    if (old_val!=check) {
+        on.exit(S4Vectors:::disableValidity(old_val))
+        S4Vectors:::disableValidity(check)
     }
-    return(ans)
+    as(ans, class(x))
 })
 
 .coerce_to_union <- function(all.regions, all.anchor1, all.anchor2) {
