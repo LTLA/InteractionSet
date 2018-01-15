@@ -37,12 +37,22 @@ test_that("boundingBox works without a factor", {
     ref <- GInteractions(unname(ref1), unname(ref2))
     names(ref) <- 1
     expect_identical(boundingBox(x.A), ref)
+
+    only.AB <- all.chrs[anchors(x, type="first", id=TRUE)] == "chrA" & all.chrs[anchors(x, type="second", id=TRUE)] == "chrB"
+    x.AB <- x[only.AB]
+    ref1 <- unlist(range(anchors(x.AB, type="first")))
+    ref2 <- unlist(range(anchors(x.AB, type="second")))
+    ref <- GInteractions(unname(ref1), unname(ref2))
+    names(ref) <- 1
+    expect_identical(boundingBox(x.AB), ref)
 })
 
 test_that("boundingBox breaks with silly inputs", {
     expect_error(boundingBox(x), "multiple chromosomes for group '1'")
     f <- rep("whee", Np)
-    expect_error(boundingBox(x,f), "multiple chromosomes for group 'whee'")
+    f[-1] <- "YAY"
+    expect_error(boundingBox(x,f), "multiple chromosomes for group 'YAY'")
+    
     ref <- GInteractions(all.regions[0], all.regions[0])
     names(ref) <- character(0)
     expect_identical(boundingBox(x[0]), ref)

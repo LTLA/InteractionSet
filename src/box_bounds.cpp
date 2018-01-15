@@ -1,74 +1,69 @@
 #include "iset.h"
 
-SEXP get_box_bounds (SEXP ids, SEXP reflevels, SEXP adex, SEXP chrs, SEXP starts, SEXP ends) {
+SEXP get_box_bounds (SEXP runs, SEXP reflevels, SEXP adex, SEXP chrs, SEXP starts, SEXP ends) {
     BEGIN_RCPP
 
     // Setting up input objects.
-    const Rcpp::IntegerVector _ids(ids),_adex(adex);
-    const int npts=_ids.size();
-    if (npts!=_adex.size()) { 
-        throw std::runtime_error("anchor index and grouping vectors are not of same length"); 
+    const Rcpp::IntegerVector Runs(runs), Adex(adex);
+    const size_t nlevels=Runs.size();
+    const size_t npts=std::accumulate(Runs.begin(), Runs.end(), 0);
+    if (npts!=Adex.size()) { 
+        throw std::runtime_error("anchor index length should be equal to sum of factor runs");
     }
-
-    const Rcpp::StringVector _reflevels(reflevels);
-    const int nlevels=_reflevels.size();
     
-    const Rcpp::IntegerVector _chrs(chrs), _starts(starts), _ends(ends);
-    const int nregs=_chrs.size();
-    if (nregs!=_starts.size() || nregs!=_ends.size()) {
+    const Rcpp::IntegerVector Chrs(chrs), Starts(starts), Ends(ends);
+    const int nregs=Chrs.size();
+    if (nregs!=Starts.size() || nregs!=Ends.size()) {
         throw std::runtime_error("chromosome/start/end vectors should have the same length"); 
     }
 
-    int ngroups=(npts > 0 ? 1 : 0);
-    for (int i=1; i<npts; ++i) {
-        if (_ids[i]!=_ids[i-1]) { ++ngroups; }
+    for (const auto& A : Adex) {
+        if (A < 0 || A >= nregs) {
+            throw std::runtime_error("anchor index out of range of 'regions(x)'");
+        }
     }
 
     // Setting up output constructs.
-    Rcpp::IntegerVector out_fac(ngroups), out_chr(ngroups), out_start(ngroups), out_end(ngroups);
-    if (ngroups > 0) {
-        out_fac[0]=_ids[0];
-        out_chr[0]=_chrs[_adex[0]];
-        out_start[0]=_starts[_adex[0]];
-        out_end[0]=_ends[_adex[0]];
-    }
+    Rcpp::IntegerVector out_chr(nlevels), out_start(nlevels), out_end(nlevels);
+    Rcpp::IntegerVector::const_iterator aIt=Adex.begin();
+    Rcpp::IntegerVector::iterator ocIt=out_chr.begin(), osIt=out_start.begin(), oeIt=out_end.begin();
+    int run_counter=0;
 
-    int curgroup=0;
-    for (int i=1; i<npts; ++i) {
-        const int& curdex=_adex[i];
-        if (curdex < 0 || curdex >= nregs) { 
-            throw std::runtime_error("anchor index is out of bounds"); 
-        }
+    for (const auto& rlen : Runs) {
+        const int& curA=*aIt;
+        int& curchr=(*ocIt = Chrs[curA]);
+        int& curstart=(*osIt = Starts[curA]);
+        int& curend=(*oeIt = Ends[curA]);
+        ++aIt;        
 
-        const int& curid=_ids[i];
-        if (curid!=_ids[i-1]) {
-            ++curgroup;
-            if (curgroup >= ngroups) { 
-                throw std::runtime_error("internal indexing error for groups"); 
-            }
-            out_fac[curgroup]=curid;
-            out_chr[curgroup]=_chrs[curdex];
-            out_start[curgroup]=_starts[curdex];
-            out_end[curgroup]=_ends[curdex];
-        } else {
-            if (out_chr[curgroup]!=_chrs[curdex]) {
-                if (curid >= nlevels) {
-                    throw std::runtime_error("grouping index outside range of reference levels");
+        for (int i=1; i<rlen; ++i) {
+            const int& nextA=*aIt;
+
+            if (Chrs[nextA]!=curchr) {
+                Rcpp::StringVector mylevels(reflevels); // Coerces it to a string, if it wasn't already.
+                if (mylevels.size() <= run_counter) {
+                    throw std::runtime_error("insufficient levels supplied for the given number of runs");
                 }
                 std::stringstream err_out;
-                err_out << "multiple chromosomes for group '" << Rcpp::as<std::string>(_reflevels[curid]) << "'";
+                err_out << "multiple chromosomes for group '" << Rcpp::as<std::string>(mylevels[run_counter]) << "'";
                 throw std::runtime_error(err_out.str());
             }
-            if (out_start[curgroup] > _starts[curdex]) { 
-                out_start[curgroup] = _starts[curdex]; 
+            if (Starts[nextA] < curstart) { 
+                curstart = Starts[nextA];
             }
-            if (out_end[curgroup] < _ends[curdex]) { 
-                out_end[curgroup] = _ends[curdex]; 
+            if (Ends[nextA] > curend) { 
+                curend = Ends[nextA];
             }
+            ++aIt;
         }
+
+        ++ocIt;
+        ++osIt;
+        ++oeIt;
+        ++run_counter;
     }
-    
-    return Rcpp::List::create(out_fac, out_chr, out_start, out_end);
+   
+    return Rcpp::List::create(out_chr, out_start, out_end);
     END_RCPP
 }
 
