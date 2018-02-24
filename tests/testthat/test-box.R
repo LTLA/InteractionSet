@@ -32,16 +32,16 @@ test_that("boundingBox works with a factor", {
 test_that("boundingBox works without a factor", {
     only.A <- all.chrs[anchors(x, type="first", id=TRUE)] == "chrA" & all.chrs[anchors(x, type="second", id=TRUE)] == "chrA"
     x.A <- x[only.A]
-    ref1 <- unlist(range(anchors(x.A, type="first")))
-    ref2 <- unlist(range(anchors(x.A, type="second")))
+    ref1 <- range(anchors(x.A, type="first"))
+    ref2 <- range(anchors(x.A, type="second"))
     ref <- GInteractions(unname(ref1), unname(ref2))
     names(ref) <- 1
     expect_identical(boundingBox(x.A), ref)
 
     only.AB <- all.chrs[anchors(x, type="first", id=TRUE)] == "chrA" & all.chrs[anchors(x, type="second", id=TRUE)] == "chrB"
     x.AB <- x[only.AB]
-    ref1 <- unlist(range(anchors(x.AB, type="first")))
-    ref2 <- unlist(range(anchors(x.AB, type="second")))
+    ref1 <- range(anchors(x.AB, type="first"))
+    ref2 <- range(anchors(x.AB, type="second"))
     ref <- GInteractions(unname(ref1), unname(ref2))
     names(ref) <- 1
     expect_identical(boundingBox(x.AB), ref)
