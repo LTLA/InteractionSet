@@ -16,17 +16,17 @@ test_that("show methods work for GI objects", {
     expect_output(show(x), "GInteractions object with 20 interactions and 0 metadata columns:
        seqnames1   ranges1     seqnames2   ranges2
            <Rle> <IRanges>         <Rle> <IRanges>
-   [1]      chrA [82, 100] ---      chrB [67,  84]
-   [2]      chrA [76,  95] ---      chrB [64,  78]
-   [3]      chrA [87, 104] ---      chrA [ 3,  23]
-   [4]      chrB [67,  84] ---      chrA [41,  59]
-   [5]      chrA [14,  19] ---      chrA [87, 104]
+   [1]      chrA    82-100 ---      chrB     67-84
+   [2]      chrA     76-95 ---      chrB     64-78
+   [3]      chrA    87-104 ---      chrA      3-23
+   [4]      chrB     67-84 ---      chrA     41-59
+   [5]      chrA     14-19 ---      chrA    87-104
    ...       ...       ... ...       ...       ...
-  [16]      chrA [59,  72] ---      chrA [68,  78]
-  [17]      chrA [84, 103] ---      chrB [94, 113]
-  [18]      chrB [89,  97] ---      chrA [20,  33]
-  [19]      chrA [41,  59] ---      chrA [84, 103]
-  [20]      chrA [86, 105] ---      chrA [76,  95]
+  [16]      chrA     59-72 ---      chrA     68-78
+  [17]      chrA    84-103 ---      chrB    94-113
+  [18]      chrB     89-97 ---      chrA     20-33
+  [19]      chrA     41-59 ---      chrA    84-103
+  [20]      chrA    86-105 ---      chrA     76-95
   -------
   regions: 30 ranges and 0 metadata columns
   seqinfo: 2 sequences from an unspecified genome; no seqlengths", fixed=TRUE)
@@ -200,17 +200,17 @@ test_that("other setters work properly for GI objects", {
     expect_output(show(x), "GInteractions object with 20 interactions and 1 metadata column:
        seqnames1   ranges1     seqnames2   ranges2 |              stuff
            <Rle> <IRanges>         <Rle> <IRanges> |          <numeric>
-   [1]      chrA [82, 100] ---      chrB [67,  84] |  0.685012309812009
-   [2]      chrA [76,  95] ---      chrB [64,  78] |  0.895816484699026
-   [3]      chrA [87, 104] ---      chrA [ 3,  23] |  0.618890272220597
-   [4]      chrB [67,  84] ---      chrA [41,  59] | 0.0507488863077015
-   [5]      chrA [14,  19] ---      chrA [87, 104] |  0.621526781003922
+   [1]      chrA    82-100 ---      chrB     67-84 |  0.685012309812009
+   [2]      chrA     76-95 ---      chrB     64-78 |  0.895816484699026
+   [3]      chrA    87-104 ---      chrA      3-23 |  0.618890272220597
+   [4]      chrB     67-84 ---      chrA     41-59 | 0.0507488863077015
+   [5]      chrA     14-19 ---      chrA    87-104 |  0.621526781003922
    ...       ...       ... ...       ...       ... .                ...
-  [16]      chrA [59,  72] ---      chrA [68,  78] |  0.727361923549324
-  [17]      chrA [84, 103] ---      chrB [94, 113] |  0.402884092880413
-  [18]      chrB [89,  97] ---      chrA [20,  33] |  0.906575692584738
-  [19]      chrA [41,  59] ---      chrA [84, 103] |  0.582026617834345
-  [20]      chrA [86, 105] ---      chrA [76,  95] |  0.863604818237945
+  [16]      chrA     59-72 ---      chrA     68-78 |  0.727361923549324
+  [17]      chrA    84-103 ---      chrB    94-113 |  0.402884092880413
+  [18]      chrB     89-97 ---      chrA     20-33 |  0.906575692584738
+  [19]      chrA     41-59 ---      chrA    84-103 |  0.582026617834345
+  [20]      chrA    86-105 ---      chrA     76-95 |  0.863604818237945
   -------
   regions: 30 ranges and 0 metadata columns
   seqinfo: 2 sequences from an unspecified genome; no seqlengths", fixed=TRUE)
@@ -230,16 +230,16 @@ test_that("subsetting works for GI objects", {
     expect_output(show(xsub), "GInteractions object with 10 interactions and 0 metadata columns:
        seqnames1   ranges1     seqnames2   ranges2
            <Rle> <IRanges>         <Rle> <IRanges>
-   [1]      chrA [82, 100] ---      chrB [67,  84]
-   [2]      chrA [76,  95] ---      chrB [64,  78]
-   [3]      chrA [87, 104] ---      chrA [ 3,  23]
-   [4]      chrB [67,  84] ---      chrA [41,  59]
-   [5]      chrA [14,  19] ---      chrA [87, 104]
-   [6]      chrB [42,  54] ---      chrB [91,  98]
-   [7]      chrB [64,  78] ---      chrA [55,  68]
-   [8]      chrA [ 3,  23] ---      chrB [81,  98]
-   [9]      chrA [61,  67] ---      chrA [46,  66]
-  [10]      chrA [41,  49] ---      chrA [59,  72]
+   [1]      chrA    82-100 ---      chrB     67-84
+   [2]      chrA     76-95 ---      chrB     64-78
+   [3]      chrA    87-104 ---      chrA      3-23
+   [4]      chrB     67-84 ---      chrA     41-59
+   [5]      chrA     14-19 ---      chrA    87-104
+   [6]      chrB     42-54 ---      chrB     91-98
+   [7]      chrB     64-78 ---      chrA     55-68
+   [8]      chrA      3-23 ---      chrB     81-98
+   [9]      chrA     61-67 ---      chrA     46-66
+  [10]      chrA     41-49 ---      chrA     59-72
   -------
   regions: 30 ranges and 0 metadata columns
   seqinfo: 2 sequences from an unspecified genome; no seqlengths", fixed=TRUE)
@@ -505,17 +505,17 @@ test_that("name handling is correct with GI objects", {
     expect_output(show(temp.x),"GInteractions object with 20 interactions and 0 metadata columns:
       seqnames1   ranges1     seqnames2   ranges2
           <Rle> <IRanges>         <Rle> <IRanges>
-   X1      chrA [82, 100] ---      chrB [67,  84]
-   X2      chrA [76,  95] ---      chrB [64,  78]
-   X3      chrA [87, 104] ---      chrA [ 3,  23]
-   X4      chrB [67,  84] ---      chrA [41,  59]
-   X5      chrA [14,  19] ---      chrA [87, 104]
+   X1      chrA    82-100 ---      chrB     67-84
+   X2      chrA     76-95 ---      chrB     64-78
+   X3      chrA    87-104 ---      chrA      3-23
+   X4      chrB     67-84 ---      chrA     41-59
+   X5      chrA     14-19 ---      chrA    87-104
   ...       ...       ... ...       ...       ...
-  X16      chrA [59,  72] ---      chrA [68,  78]
-  X17      chrA [84, 103] ---      chrB [94, 113]
-  X18      chrB [89,  97] ---      chrA [20,  33]
-  X19      chrA [41,  59] ---      chrA [84, 103]
-  X20      chrA [86, 105] ---      chrA [76,  95]
+  X16      chrA     59-72 ---      chrA     68-78
+  X17      chrA    84-103 ---      chrB    94-113
+  X18      chrB     89-97 ---      chrA     20-33
+  X19      chrA     41-59 ---      chrA    84-103
+  X20      chrA    86-105 ---      chrA     76-95
   -------
   regions: 30 ranges and 0 metadata columns
   seqinfo: 2 sequences from an unspecified genome; no seqlengths", fixed=TRUE)
