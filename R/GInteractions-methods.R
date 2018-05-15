@@ -272,9 +272,9 @@ setMethod("GInteractions", c("missing", "missing", "GenomicRanges_OR_missing"),
 ###############################################################
 # Concatenation
 
-setMethod("concatenateObjects", "GInteractions",
+setMethod("bindROWS", "GInteractions",
   function(x, objects=list(), use.names=TRUE, ignore.mcols=FALSE, check=TRUE) {
-    objects <- S4Vectors:::prepare_objects_to_concatenate(x, objects)
+    objects <- S4Vectors:::prepare_objects_to_bind(x, objects)
     all.objects <- c(list(x), objects)
 
     # Taken from XVector:::concatenate_XVectorList_objects. Note that the 
