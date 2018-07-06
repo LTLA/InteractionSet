@@ -363,9 +363,9 @@ for (siglist in c("GInteractions", "ContactMatrix")) {
         seqinfo(regions(x))
     })
     
-    setReplaceMethod("seqinfo", siglist, function(x, value) {
+    setReplaceMethod("seqinfo", siglist, function(x, new2old = NULL, pruning.mode = c("error", "coarse", "fine", "tidy"), value) {
         r <- regions(x)
-        seqinfo(r) <- value
+        seqinfo(r, new2old=new2old, pruning.mode=pruning.mode) <- value
         unchecked_regions(x) <- r
         return(x)
     })
@@ -375,7 +375,7 @@ setMethod("seqinfo", "InteractionSet", function(x) {
      seqinfo(interactions(x))
 })
 
-setReplaceMethod("seqinfo", "InteractionSet", function(x, value) {
+setReplaceMethod("seqinfo", "InteractionSet", function(x, new2old = NULL, pruning.mode = c("error", "coarse", "fine", "tidy"), value) {
     i <- interactions(x)                 
     seqinfo(i) <- value
     unchecked_interactions(x) <- i

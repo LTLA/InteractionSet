@@ -106,8 +106,10 @@ Methods to get and set fields in an InteractionSet or GInteractions object.
 \S4method{regions}{GInteractions}(x) <- value
 \S4method{regions}{InteractionSet}(x) <- value
 
-\S4method{seqinfo}{GInteractions}(x) <- value
-\S4method{seqinfo}{InteractionSet}(x) <- value
+\S4method{seqinfo}{GInteractions}(x, new2old = NULL, 
+    pruning.mode = c("error", "coarse", "fine", "tidy")) <- value
+\S4method{seqinfo}{InteractionSet}(x, new2old = NULL, 
+    pruning.mode = c("error", "coarse", "fine", "tidy")) <- value
 
 \S4method{replaceRegions}{GInteractions}(x) <- value
 \S4method{replaceRegions}{InteractionSet}(x) <- value
@@ -145,6 +147,8 @@ Methods to get and set fields in an InteractionSet or GInteractions object.
 \item{type}{a string specifying which anchors are to be extracted or replaced.}
 
 \item{id}{a scalar logical indicating whether indices or GRanges should be returned.}
+
+\item{new2old, pruning.mode}{Additional arguments to pass to \code{\link{seqinfo,GRanges-method}}.}
 
 \item{name}{a string indicating the field of \code{mcols} to be accessed or modified for a GInteractions object.}
 
