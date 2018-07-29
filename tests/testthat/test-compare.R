@@ -38,6 +38,10 @@ test_that("matching between GI objects works", {
     more.x <- another.x
     suppressWarnings(replaceRegions(more.x) <- c(GRanges("achr", IRanges(1, 1)), all.regions)) # inserts at front.
     expect_identical(ref, match(x, more.x))
+
+    # Testing via the %in% operator.
+    expect_identical(x %in% another.x, !is.na(match(x, another.x)))
+    expect_identical(x[20:10] %in% another.x, !is.na(match(x[20:10], another.x)))
 })
 
 test_that("matching between ISet objects works", {
@@ -45,6 +49,7 @@ test_that("matching between ISet objects works", {
     another.x <- x[sample(Np)] 
     iset2 <- InteractionSet(matrix(runif(Np), dimnames=list(NULL, 1)), another.x)
     
+    # Testing ISet to GI and vice versa.
     expect_identical(match(iset, x), ref.match(iset, x))
     expect_identical(match(iset, another.x), ref.match(iset, another.x))
     expect_identical(match(iset2, x), ref.match(iset2, x))
@@ -53,11 +58,17 @@ test_that("matching between ISet objects works", {
     expect_identical(match(x, iset2), ref.match(x, iset2))
     expect_identical(match(iset, iset2), ref.match(iset, iset2))
 
+    # Testing various subsets.
     expect_identical(match(iset[10:15], another.x), ref.match(iset[10:15], another.x))
     expect_identical(match(another.x, iset[10:15]), ref.match(another.x, iset[10:15]))
     expect_identical(match(iset, another.x[20:6]), ref.match(iset, another.x[20:6]))
     expect_identical(match(another.x[20:6], iset), ref.match(another.x[20:6], iset))
     expect_identical(match(iset, iset2[1:6,]), ref.match(iset, iset2[1:6,]))
+
+    # Testing via %in%.
+    expect_identical(iset %in% another.x, !is.na(ref.match(iset, another.x)))
+    expect_identical(iset %in% iset2, !is.na(ref.match(iset, iset2)))
+    expect_identical(another.x %in% iset, !is.na(ref.match(another.x, iset)))
 })
 
 #####################################
