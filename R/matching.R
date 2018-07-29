@@ -1,5 +1,8 @@
 # Defines the match function.
 
+#' @importFrom BiocGenerics match
+#' @importFrom S4Vectors Hits
+#' @importMethodsFrom S4Vectors match
 setMethod("match", c("GInteractions", "GInteractions"), 
     function(x, table, nomatch = NA_integer_, incomparables = NULL, ...) {
         .strict_check(x, table)
@@ -11,15 +14,11 @@ setMethod("match", c("GInteractions", "GInteractions"),
             return(findOverlaps(x, table, type="equal", select="first", use.region="same"))
         }
 
-        # Using the Hits method, for convenience (this automatically resorts).
-        nR <- length(regions(x))
-        a1 <- Hits(anchor1(x), anchor2(x), nR, nR, order=seq_along(x))
-        a2 <- Hits(anchor1(table), anchor2(table), nR, nR, order=seq_along(table))
-        out <- match(a1, a2, nomatch=nomatch, incomparables=incomparables, ...)
-
-        # Unscrambling:
-        out[mcols(a1)$order] <- mcols(a2)$order[out]
-        return(out)
+        # Using the Hits method, for convenience.
+        nR <- length(rx)
+        a1 <- Hits(anchor1(x), anchor2(x), nR, nR, sort.by.query=FALSE)
+        a2 <- Hits(anchor1(table), anchor2(table), nR, nR, sort.by.query=FALSE)
+        match(a1, a2, nomatch=nomatch, incomparables=incomparables, ...)
     }
 )
 
