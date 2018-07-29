@@ -2,7 +2,20 @@
 \title{InteractionSet News}
 \encoding{UTF-8}
 
-\section{Version 1.5.7}{\itemize{
+\section{Version 1.9.3}{\itemize{
+\item Bug fix to seqinfo<- to support other arguments in the generic.
+}}
+
+\section{Version 1.8.0}{\itemize{
+\item Updated show() methods for GInteractions objects.
+    
+\item Supported Hits inputs for repeated linkOverlaps() calls.
+Set ignore.strand=TRUE by default.
+
+\item findOverlaps() with no subject argument now returns a SortedBySelfQueryHits.
+}}
+
+\section{Version 1.6.0}{\itemize{
 \item Removed c() method for InteractionSet, rbind method for GInteractions.
 
 \item Generalized ContactMatrix to allow any type of matrix-like object.

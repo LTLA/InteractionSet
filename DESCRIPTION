@@ -1,6 +1,6 @@
 Package: InteractionSet
-Version: 1.9.2
-Date: 2018-07-06
+Version: 1.9.3
+Date: 2018-07-29
 Title: Base Classes for Storing Genomic Interaction Data
 Author: Aaron Lun <alun@wehi.edu.au>, Malcolm Perry <mgperry32@gmail.com>,
         Liz Ing-Simmons <liz.ing-simmons12@csc.mrc.ac.uk>
