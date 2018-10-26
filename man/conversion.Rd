@@ -13,7 +13,7 @@ Inflate a GInteractions or InteractionSet into a ContactMatrix, or deflate a Con
 }
 
 \usage{
-\S4method{inflate}{GInteractions}(x, rows, columns, fill=NULL, swap=TRUE, sparse=FALSE, ...)
+\S4method{inflate}{GInteractions}(x, rows, columns, fill=TRUE, swap=TRUE, sparse=FALSE, ...)
 
 \S4method{inflate}{InteractionSet}(x, rows, columns, assay=1L, sample=1L, fill, swap=TRUE, sparse=FALSE, ...)
 
@@ -38,7 +38,7 @@ Inflate a GInteractions or InteractionSet into a ContactMatrix, or deflate a Con
 }
 
 \item{fill}{
-    A numeric vector of length equal to \code{nrow(x)}, containing values with which to fill the ContactMatrix.
+    A vector (usually logical or numeric) of length equal to \code{nrow(x)}, containing values with which to fill the ContactMatrix.
     If specified, this overrides extraction of assay values for \code{inflate,InteractionSet-method}.
 }
 
@@ -88,7 +88,7 @@ Values of the vector need not be sorted or unique, but must lie within \code{[1,
 }
 
 For the GInteractions method, values in the matrix are filled based on user-supplied values in \code{fill}.
-Each entry of \code{fill} corresponds to an interaction in \code{x} is used to set the matrix value at the matching row/column.
+Each element of \code{fill} corresponds to an interaction in \code{x} and is used to set the matrix entry at the matching row/column.
 Some entries of the matrix will correspond to pairwise interactions that are not present in \code{x} - these are filled with \code{NA} values.
 
 By default, filling is repeated after swapping the anchor indices.
@@ -101,11 +101,11 @@ For the InteractionSet \code{inflate} method, entries in the matrix are filled i
 For more complex \code{x}, values from different assays and samples can be extracted using the \code{assay} and \code{sample} arguments.
 Note that if \code{fill} is specified, it will override any extraction of values from the assays.
 
-If \code{sparse=TRUE}, \code{inflate} will return a ContactMatrix containing a sparseMatrix in the \code{matrix} slot.
+If \code{sparse=TRUE}, \code{inflate} will return a ContactMatrix containing a \linkS4class{sparseMatrix} in the \code{matrix} slot.
 Here, entries without a corresponding interaction in \code{x} are set to zero, not \code{NA}.
+See below for some considerations when interpreting zeroes and \code{NA}s in contact matrices.
 
-If \code{fill=NULL}, it is set to \code{TRUE} by default, with \code{swap} also changed to \code{FALSE} and \code{sparse} changed to \code{TRUE}.
-This has the effect of producing a logical sparse matrix in the output ContactMatrix, indicating which pairs of regions were present in \code{x}.
+The default \code{fill=TRUE} has the effect of producing a logical sparse matrix in the output ContactMatrix, indicating which pairs of regions were present in \code{x}.
 }
 
 \section{Deflating from a ContactMatrix}{
