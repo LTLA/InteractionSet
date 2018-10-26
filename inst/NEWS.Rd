@@ -2,8 +2,10 @@
 \title{InteractionSet News}
 \encoding{UTF-8}
 
-\section{Version 1.9.3}{\itemize{
+\section{Version 1.10.0}{\itemize{
 \item Bug fix to seqinfo<- to support other arguments in the generic.
+
+\item Modified behaviour of inflate() with unspecified fill= for GInteractions objects.
 }}
 
 \section{Version 1.8.0}{\itemize{
