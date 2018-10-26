@@ -68,9 +68,14 @@ test_that("Inflation with integers works", {
     expect_equal(as.matrix(out2)[not.missing], ref[not.missing])
     expect_true(all(as.matrix(as.matrix(out2))[!not.missing]==0))
 
-    # Supplying NULL fill.
-    outx <- inflate(x, chosen.rows, chosen.cols, fill=NULL) 
-    refx <- inflate(x, chosen.rows, chosen.cols, fill=1, sparse=TRUE) 
+    # Testing default fill.
+    outx <- inflate(interactions(x), chosen.rows, chosen.cols) 
+    refx <- inflate(interactions(x), chosen.rows, chosen.cols, fill=rep(1, length(x)))
+    expect_identical(anchors(outx), anchors(refx))
+    expect_identical(as.matrix(outx), as.matrix(refx)!=0)
+
+    outx <- inflate(interactions(x), chosen.rows, chosen.cols, sparse=TRUE)
+    refx <- inflate(interactions(x), chosen.rows, chosen.cols, fill=rep(1, length(x)), sparse=TRUE)
     expect_identical(anchors(outx), anchors(refx))
     expect_identical(as.matrix(outx), as.matrix(refx)!=0)
     
