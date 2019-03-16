@@ -95,7 +95,7 @@ stopifnot(all.equal(x[o$row,o$column], x2))
 # Checking duplication.
 duplicated(x)
 duplicated(rbind(x, x))
-stopifnot(all.equal(x, unique(rbind(x, x))))
+stopifnot(all.equal(unique(x), unique(rbind(x, x))))
 }
 
 \author{

@@ -183,7 +183,7 @@ stopifnot(all.equal(gi[o], gi2))
 # Checking duplication.
 summary(duplicated(gi))
 summary(duplicated(c(gi, gi)))
-stopifnot(all.equal(gi, unique(c(gi, gi))))
+stopifnot(all.equal(unique(gi), unique(c(gi, gi))))
 
 # Matching and comparing.
 another.gi <- gi[sample(length(gi))]
