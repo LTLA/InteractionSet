@@ -5,9 +5,8 @@ Title: Base Classes for Storing Genomic Interaction Data
 Authors@R: c(person("Aaron", "Lun", role = c("aut", "cre"), email = "infinite.monkeys.with.keyboards@gmail.com"),
         person("Malcolm", "Perry", role = "aut", email = "mgperry32@gmail.com"),
         person("Elizabeth", "Ing-Simmons", role = "aut"))
-Depends: R (>= 3.5), GenomicRanges, SummarizedExperiment
-Imports: IRanges, S4Vectors (>= 0.19.4), GenomeInfoDb, BiocGenerics,
-        methods, Matrix, Rcpp
+Depends: GenomicRanges, SummarizedExperiment
+Imports: IRanges, S4Vectors, GenomeInfoDb, BiocGenerics, methods, Matrix, Rcpp
 Suggests: testthat, knitr, rmarkdown, BiocStyle
 LinkingTo: Rcpp
 biocViews: Infrastructure, DataRepresentation, Software, HiC
