@@ -94,7 +94,7 @@ If both anchors are missing, the constructor will return an empty GInteractions 
 \examples{
 set.seed(1000)
 N <- 30
-all.starts <- round(runif(N, 1, 100))
+all.starts <- sample(1000, N)
 all.ends <- all.starts + round(runif(N, 5, 20))
 all.regions <- GRanges(rep(c("chrA", "chrB"), c(N-10, 10)),
     IRanges(all.starts, all.ends))
@@ -105,9 +105,9 @@ all.anchor2 <- sample(N, Np)
 gi <- GInteractions(all.anchor1, all.anchor2, all.regions)
 
 # Equivalent construction:
-gi <- GInteractions(all.regions[all.anchor1], all.regions[all.anchor2])
-gi <- GInteractions(all.regions[all.anchor1], all.regions[all.anchor2], 
-        all.regions)
+GInteractions(all.regions[all.anchor1], all.regions[all.anchor2])
+GInteractions(all.regions[all.anchor1], all.regions[all.anchor2], 
+    all.regions)
 
 # Putting in metadata, elementMetadata
 temp.gi <- gi

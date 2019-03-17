@@ -92,7 +92,7 @@ Another issue is how missing values should be interpreted in the sparseMatrix --
 \examples{
 set.seed(1000)
 N <- 30
-all.starts <- round(runif(N, 1, 100))
+all.starts <- sample(1000, N)
 all.ends <- all.starts + round(runif(N, 5, 20))
 all.regions <- GRanges(rep(c("chrA", "chrB"), c(N-10, 10)),
     IRanges(all.starts, all.ends))
@@ -105,10 +105,10 @@ counts <- matrix(rpois(Nr*Nc, lambda=10), Nr, Nc)
 x <- ContactMatrix(counts, all.anchor1, all.anchor2, all.regions)
 
 # Equivalent construction:
-x <- ContactMatrix(counts, all.regions[all.anchor1], 
-        all.regions[all.anchor2])
-x <- ContactMatrix(counts, all.regions[all.anchor1], 
-        all.regions[all.anchor2], all.regions)
+ContactMatrix(counts, all.regions[all.anchor1], 
+    all.regions[all.anchor2])
+ContactMatrix(counts, all.regions[all.anchor1], 
+    all.regions[all.anchor2], all.regions)
 
 # Also works directly with Matrix objects.
 counts2 <- Matrix::Matrix(counts)
