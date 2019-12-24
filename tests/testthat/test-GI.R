@@ -197,23 +197,7 @@ test_that("other setters work properly for GI objects", {
     x$stuff <- ref.score
     expect_identical(x$stuff, mcols(x)$stuff)
     expect_identical(colnames(mcols(x)), "stuff")
-    expect_output(show(x), "GInteractions object with 20 interactions and 1 metadata column:
-       seqnames1   ranges1     seqnames2   ranges2 |              stuff
-           <Rle> <IRanges>         <Rle> <IRanges> |          <numeric>
-   [1]      chrA    94-105 ---      chrA     41-48 |  0.906575692584738
-   [2]      chrB     42-54 ---      chrA    94-105 |  0.582026617834345
-   [3]      chrA     41-48 ---      chrA     59-72 |  0.863604818237945
-   [4]      chrB     64-78 ---      chrA     55-68 | 0.0807054068427533
-   [5]      chrA     41-59 ---      chrA      3-23 |   0.81304822396487
-   ...       ...       ... ...       ...       ... .                ...
-  [16]      chrA     76-95 ---      chrB     91-98 |   0.95063978806138
-  [17]      chrA     46-66 ---      chrB     67-84 |  0.508890328463167
-  [18]      chrA     68-78 ---      chrA     20-33 |  0.398672606563196
-  [19]      chrA     61-67 ---      chrA    87-104 |  0.523666693130508
-  [20]      chrA     18-35 ---      chrB     63-76 |  0.482420985586941
-  -------
-  regions: 30 ranges and 0 metadata columns
-  seqinfo: 2 sequences from an unspecified genome; no seqlengths", fixed=TRUE)
+    expect_output(show(x), "stuff")
     x$stuff <- NULL
     
     new.si <- Seqinfo(seqnames=c("chrA", "chrB"), seqlengths=c(1000, 2000))
