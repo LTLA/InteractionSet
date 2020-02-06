@@ -22,7 +22,7 @@ setValidity2("ContactMatrix", function(object) {
 }) 
 
 setMethod("show", signature("ContactMatrix"), function(object) {
-    cat("class:", class(object), "\n")
+    cat("class:", class(object)[1], "\n")
     cat("dim:", dim(as.matrix(object)), "\n")
     cat("type:", class(as.matrix(object)), "\n")
 

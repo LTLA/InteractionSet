@@ -42,18 +42,6 @@ colnames: NULL
 metadata(0):
 regions: %i", Nr, Nc, mattype, N), 
     fixed=TRUE)
-
-    temp.x <- ContactMatrix(counts, all.anchor1, all.anchor2, all.regions, metadata=list("whee"=1))
-    expect_output(show(temp.x), sprintf("class: ContactMatrix 
-dim: %i %i 
-type: %s 
-rownames: NULL
-colnames: NULL
-metadata(1): whee
-regions: %i", Nr, Nc, mattype, N),
-    fixed=TRUE)
-    metadata(temp.x)$whee <- NULL
-    expect_identical(temp.x, x)
 })
 
 ###################################
@@ -177,15 +165,9 @@ test_that("setters on the matrix are functional for CM objects", {
 test_that("subsetting works correctly for CM objects", {
     rchosen <- 1:5
     xsub <- x[rchosen,]
-    expect_output(show(xsub), sprintf("class: ContactMatrix 
-dim: 5 20 
-type: %s 
-rownames: NULL
-colnames: NULL
-metadata(0):
-regions: 30", mattype),
-    fixed=TRUE)
-  
+    expect_identical(nrow(xsub), length(rchosen))
+    expect_identical(ncol(xsub), ncol(x))
+
     expect_identical(as.matrix(xsub), as.matrix(x)[rchosen,])
     expect_identical(regions(xsub), regions(x))
     expect_identical(anchors(xsub, type="row"), ref.regions[ref.anchor1][rchosen])
@@ -193,14 +175,8 @@ regions: 30", mattype),
 
     cchosen <- 10:20
     xsub <- x[,cchosen]
-    expect_output(show(xsub), sprintf("class: ContactMatrix 
-dim: 10 11 
-type: %s 
-rownames: NULL
-colnames: NULL
-metadata(0):
-regions: 30", mattype),
-    fixed=TRUE)
+    expect_identical(ncol(xsub), length(cchosen))
+    expect_identical(nrow(xsub), nrow(x))
 
     expect_identical(as.matrix(xsub), as.matrix(x)[,cchosen])
     expect_identical(regions(xsub), regions(x))
@@ -208,14 +184,8 @@ regions: 30", mattype),
     expect_identical(anchors(xsub, type="column"), ref.regions[ref.anchor2][cchosen])
 
     xsub <- subset(x,rchosen,cchosen)
-    expect_output(show(xsub), sprintf("class: ContactMatrix 
-dim: 5 11 
-type: %s 
-rownames: NULL
-colnames: NULL
-metadata(0):
-regions: 30", mattype),
-    fixed=TRUE)
+    expect_identical(nrow(xsub), length(rchosen))
+    expect_identical(ncol(xsub), length(cchosen))
 
     expect_identical(as.matrix(xsub), as.matrix(x)[rchosen,cchosen])
     expect_identical(regions(xsub), regions(x))
@@ -358,16 +328,9 @@ test_that("name setting and getting work correctly for CM objects", {
     rownames(temp.x) <- rowref
     colref <- paste0("Y", seq_len(ncol(temp.x)))
     colnames(temp.x) <- colref
-    expect_output(show(temp.x), sprintf("class: ContactMatrix 
-dim: %i %i 
-type: %s 
-rownames(10): X1 X2 ... X9 X10
-colnames(20): Y1 Y2 ... Y19 Y20
-metadata(0):
-regions: %i", nrow(temp.x), ncol(temp.x), mattype, length(regions(temp.x))), 
-    fixed=TRUE)
 
     expect_identical(rownames(temp.x), rowref)
+    expect_identical(colnames(temp.x), colref)
     expect_identical(rownames(temp.x[1:5,]), rowref[1:5])
     expect_identical(colnames(temp.x[,1:3]), colref[1:3])
     
