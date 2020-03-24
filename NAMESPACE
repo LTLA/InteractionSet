@@ -27,8 +27,8 @@ export(
 )
 
 # Requires several imports.
-import(GenomicRanges, SummarizedExperiment, methods,
-    S4Vectors, IRanges, GenomeInfoDb, BiocGenerics)
+import(methods, BiocGenerics, S4Vectors, IRanges,
+    GenomeInfoDb, GenomicRanges, SummarizedExperiment)
 
 importFrom("Matrix", "Matrix", "sparseMatrix")
 

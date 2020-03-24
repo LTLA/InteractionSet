@@ -1,12 +1,13 @@
 Package: InteractionSet
-Version: 1.15.2
-Date: 2020-02-05
+Version: 1.15.3
+Date: 2020-03-24
 Title: Base Classes for Storing Genomic Interaction Data
 Authors@R: c(person("Aaron", "Lun", role = c("aut", "cre"), email = "infinite.monkeys.with.keyboards@gmail.com"),
         person("Malcolm", "Perry", role = "aut", email = "mgperry32@gmail.com"),
         person("Elizabeth", "Ing-Simmons", role = "aut"))
 Depends: GenomicRanges, SummarizedExperiment
-Imports: IRanges, S4Vectors, GenomeInfoDb, BiocGenerics, methods, Matrix, Rcpp
+Imports: methods, Matrix, Rcpp,
+        BiocGenerics, S4Vectors (>= 0.25.14), IRanges, GenomeInfoDb
 Suggests: testthat, knitr, rmarkdown, BiocStyle
 LinkingTo: Rcpp
 biocViews: Infrastructure, DataRepresentation, Software, HiC
