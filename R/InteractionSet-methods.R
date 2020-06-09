@@ -13,7 +13,7 @@ setValidity2("InteractionSet", function(object) {
     return(TRUE)
 })
 
-setMethod("vertical_slot_names", "InteractionSet", function(x) {
+setMethod("parallel_slot_names", "InteractionSet", function(x) {
     c("interactions", callNextMethod()) 
 })
 

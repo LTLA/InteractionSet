@@ -25,7 +25,7 @@ setValidity2("GInteractions", function(object) {
     msg <- .check_inputs(anchor1(object), anchor2(object), regions(object))
     if (is.character(msg)) { return(msg) }
 
-    ### Length of anchors versus object is automatically checked by 'vertical_slot_names.'
+    ### Length of anchors versus object is automatically checked by 'parallel_slot_names.'
 
     if (!is.null(names(object))) {
         if (length(names(object))!=length(object)) {
@@ -36,7 +36,7 @@ setValidity2("GInteractions", function(object) {
     return(TRUE)
 })
 
-setMethod("vertical_slot_names", "GInteractions", function(x) {
+setMethod("parallel_slot_names", "GInteractions", function(x) {
     c("anchor1", "anchor2", "NAMES", callNextMethod())         
 })
 
