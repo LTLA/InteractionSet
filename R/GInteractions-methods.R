@@ -64,14 +64,14 @@ showGInteractions <- function(x, margin="", print.seqinfo=FALSE, print.classinfo
         lx, " ", ifelse(lx == 1L, "interaction", "interactions"), " and ",
         nc, " metadata ", ifelse(nc == 1L, "column", "columns"),
         ":\n", sep="")
-    out <- S4Vectors:::makePrettyMatrixForCompactPrinting(x, .makeNakedMatFromGInteractions)
+    out <- makePrettyMatrixForCompactPrinting(x, .makeNakedMatFromGInteractions)
    
     # Ripped from GenomicRanges:::showGenomicRanges (with some mods).
     if (print.classinfo) { 
         .COL2CLASS <- c(seqnames1 = "Rle", ranges1 = "IRanges", "   "="", seqnames2="Rle", ranges2="IRanges")
         extraColumnNames <- GenomicRanges:::extraColumnSlotNames(x)
         .COL2CLASS <- c(.COL2CLASS, getSlots(class(x))[extraColumnNames])
-        classinfo <- S4Vectors:::makeClassinfoRowForCompactPrinting(x, .COL2CLASS)
+        classinfo <- makeClassinfoRowForCompactPrinting(x, .COL2CLASS)
         classinfo[,"   "] <- ""
         stopifnot(identical(colnames(classinfo), colnames(out)))
         out <- rbind(classinfo, out)
