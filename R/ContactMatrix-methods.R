@@ -28,7 +28,7 @@ setMethod("show", signature("ContactMatrix"), function(object) {
 
     rnames <- rownames(object)
     if (!is.null(rnames)) scat("rownames(%d): %s\n", rnames)
-    else scat("rownames: NULL\n")
+    else cat("rownames: NULL\n")
 
     cnames <- colnames(object)
     if (!is.null(cnames)) scat("colnames(%d): %s\n", cnames)
