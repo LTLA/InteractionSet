@@ -1,26 +1,23 @@
-<!--
-%\VignetteIndexEntry{Interacting with InteractionSet classes for genomic interaction data}
-%\VignettePackage{BiocStyle}
-%\VignetteEngine{knitr::knitr}
--->
+---
+title: Classes for genomic interaction data
+author: 
+- name: Aaron Lun
+  email: infinite.monkeys.with.keyboards@gmail.com
+date: "Revised: 16 April 2021"
+output:
+  BiocStyle::html_document:
+    toc_float: true
+package: InteractionSet
+vignette: >
+  %\VignetteIndexEntry{Genomic interaction classes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}    
+---
 
 ```{r, echo=FALSE, results="hide", message=FALSE}
 require(knitr)
-opts_chunk$set(error=FALSE)
+opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
 ```
-
-```{r style, echo=FALSE, results='asis'}
-BiocStyle::markdown()
-```
-
-```{r setup, echo=FALSE, message=FALSE}
-require(InteractionSet)
-```
-
-# Interacting with InteractionSet classes for genomic interaction data
-Package: `r Githubpkg("LTLA/InteractionSet")` <br />
-Author: Aaron Lun (alun@wehi.edu.au) <br />
-Compilation date: `r Sys.Date()`
 
 # Introduction
 
@@ -46,6 +43,7 @@ The regions themselves are represented by a `GRanges` object from the `r Biocpkg
 For example, say we have an `all.regions` object containing consecutive intervals (while any regions can be used here, consecutive intervals are just simpler to explain):
 
 ```{r}
+library(InteractionSet)
 all.regions <- GRanges("chrA", IRanges(0:9*10+1, 1:10*10))
 ```
 
