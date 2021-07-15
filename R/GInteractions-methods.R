@@ -365,7 +365,7 @@ setMethod("as.data.frame", "GInteractions", function (x, row.names=NULL, optiona
     used[all2] <- TRUE
     new.index <- cumsum(used) # Accelerate by only converting what we need.
 
-    regs.dframe <- as.data.frame(regions(x)[used], optional=optional, ...)
+    regs.dframe <- as.data.frame(unname(regions(x)[used]), optional=optional, ...)
     a1.dframe <- regs.dframe[new.index[all1],]
     colnames(a1.dframe) <- paste0(colnames(a1.dframe), "1")
     a2.dframe <- regs.dframe[new.index[all2],]

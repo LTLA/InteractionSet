@@ -1,6 +1,6 @@
 Package: InteractionSet
-Version: 1.21.0
-Date: 2021-04-16
+Version: 1.21.1
+Date: 2021-07-15
 Title: Base Classes for Storing Genomic Interaction Data
 Authors@R: c(person("Aaron", "Lun", role = c("aut", "cre"), email = "infinite.monkeys.with.keyboards@gmail.com"),
         person("Malcolm", "Perry", role = "aut", email = "mgperry32@gmail.com"),
@@ -25,4 +25,4 @@ Collate: AllGenerics.R AllClasses.R
         pairs.R conversion.R linearize.R
         boundingBox.R distances.R
         overlaps.R linkOverlaps.R matching.R
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
