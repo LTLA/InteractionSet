@@ -158,7 +158,7 @@ setValidity2("ReverseStrictGInteractions", function(object) {
 
 .new_GInteractions <- function(anchor1, anchor2, regions, metadata, mode=c("normal", "strict", "reverse")) {
     mode <- match.arg(mode)
-    elementMetadata <- new("DataFrame", nrows=length(anchor1))
+    elementMetadata <- make_zero_col_DFrame(length(anchor1))
 
     # Checking odds and ends.
     anchor1 <- as.integer(anchor1)
@@ -199,7 +199,7 @@ setMethod("GInteractions", c("numeric", "numeric", "GRanges"),
         out <- .new_GInteractions(anchor1, anchor2, regions=regions, metadata=metadata, mode=mode)
         extraCols <- DataFrame(...)
         if (ncol(extraCols) == 0L) {
-            extraCols <- new("DataFrame", nrows = length(anchor1))
+            extraCols <- make_zero_col_DFrame(length(anchor1))
         }
         mcols(out) <- extraCols
         out
@@ -237,7 +237,7 @@ setMethod("GInteractions", c("GRanges", "GRanges", "GenomicRanges_OR_missing"),
         # Additional Interaction-specific metadata
         extraCols <- DataFrame(...)
         if (ncol(extraCols) == 0L) {
-            extraCols <- new("DataFrame", nrows = length(anchor1))
+            extraCols <- make_zero_col_DFrame(length(anchor1))
         } 
 
         if (missing(regions)) {
