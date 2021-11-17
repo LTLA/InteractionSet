@@ -19,7 +19,8 @@ exportMethods(
     pairdist, intrachr, linearize, linkOverlaps, boundingBox,
     ContactMatrix, 
     "as.matrix<-",
-    inflate, deflate
+    inflate, deflate,
+    updateObject
 )
 
 export(

@@ -25,4 +25,5 @@ Collate: AllGenerics.R AllClasses.R
         pairs.R conversion.R linearize.R
         boundingBox.R distances.R
         overlaps.R linkOverlaps.R matching.R
+        updateObject.R
 RoxygenNote: 7.1.1
