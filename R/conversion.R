@@ -63,13 +63,15 @@ setMethod("inflate", "GInteractions", function(x, rows, columns, fill=TRUE, swap
 
     if (!sparse) { 
         out.mat <- matrix(as(NA, typeof(fill)), nR, nC)
-        out.mat[(ac2[relevantA] - 1L) * nR + ar1[relevantA]] <- fill[relevantA] 
+        idx <- cbind(ar1[relevantA], ac2[relevantA])
+        out.mat[idx] <- fill[relevantA] 
     } else {
         out.mat <- sparseMatrix(i=ar1[relevantA], j=ac2[relevantA],
                                 x=fill[relevantA], dims=c(nR, nC))
     }
     if (swap) { # Swapping anchors.
-        out.mat[(ac1[relevantB] - 1L) * nR + ar2[relevantB]] <- fill[relevantB] 
+        idx <- cbind(ar2[relevantB], ac1[relevantB])
+        out.mat[idx] <- fill[relevantB] 
     }
 
     # Restoring the original order.
