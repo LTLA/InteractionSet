@@ -1,6 +1,6 @@
 Package: InteractionSet
-Version: 1.37.0
-Date: 2023-05-13
+Version: 1.37.1
+Date: 2025-07-15
 Title: Base Classes for Storing Genomic Interaction Data
 Authors@R: c(person("Aaron", "Lun", role = c("aut", "cre"), email = "infinite.monkeys.with.keyboards@gmail.com"),
         person("Malcolm", "Perry", role = "aut", email = "mgperry32@gmail.com"),
