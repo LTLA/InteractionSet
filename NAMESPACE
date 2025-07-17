@@ -11,6 +11,7 @@ exportMethods(
     GInteractions,
     anchors, anchorIds, regions, reduceRegions, swapAnchors,
     "regions<-", "replaceRegions<-",  "appendRegions<-", "anchorIds<-",
+    seqinfo, "seqinfo<-",
     pairs, 
     findOverlaps, countOverlaps,
     InteractionSet, 
@@ -29,7 +30,7 @@ export(
 
 # Requires several imports.
 import(methods, BiocGenerics, S4Vectors, IRanges,
-    GenomeInfoDb, GenomicRanges, SummarizedExperiment)
+    Seqinfo, GenomicRanges, SummarizedExperiment)
 
 importFrom("Matrix", "Matrix", "sparseMatrix")
 
