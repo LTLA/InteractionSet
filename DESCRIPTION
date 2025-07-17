@@ -7,7 +7,7 @@ Authors@R: c(person("Aaron", "Lun", role = c("aut", "cre"), email = "infinite.mo
         person("Elizabeth", "Ing-Simmons", role = "aut"))
 Depends: GenomicRanges, SummarizedExperiment
 Imports: methods, Matrix, Rcpp,
-        BiocGenerics, S4Vectors (>= 0.27.12), IRanges, GenomeInfoDb
+        BiocGenerics, S4Vectors (>= 0.27.12), IRanges, Seqinfo
 Suggests: testthat, knitr, rmarkdown, BiocStyle
 LinkingTo: Rcpp
 biocViews: Infrastructure, DataRepresentation, Software, HiC

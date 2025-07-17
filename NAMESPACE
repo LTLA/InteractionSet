@@ -30,7 +30,7 @@ export(
 
 # Requires several imports.
 import(methods, BiocGenerics, S4Vectors, IRanges,
-    GenomeInfoDb, Seqinfo, GenomicRanges, SummarizedExperiment)
+    Seqinfo, GenomicRanges, SummarizedExperiment)
 
 importFrom("Matrix", "Matrix", "sparseMatrix")
 
