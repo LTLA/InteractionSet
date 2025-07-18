@@ -22,7 +22,7 @@ Compute the distance between interacting regions on the linear genome, for each 
 }
 
 \arguments{
-\item{x}{A GInteractions or InteractionSet object.}
+\item{x}{A \link{GInteractions} or \link{InteractionSet} object.}
 
 \item{type}{
     A character string specifying the type of distance to compute.
@@ -86,9 +86,3 @@ intrachr(iset)
 \author{
 Aaron Lun
 }
-
-\seealso{
-\code{\link{GInteractions-class}},
-\code{\link{InteractionSet-class}}
-}
-

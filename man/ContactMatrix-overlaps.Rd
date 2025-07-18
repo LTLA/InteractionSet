@@ -1,44 +1,40 @@
 \name{ContactMatrix overlaps}
 
-\alias{overlapsAny,ContactMatrix,GRanges-method}
-\alias{overlapsAny,ContactMatrix,GRangesList-method}
+\alias{overlapsAny,ContactMatrix,Vector-method}
 \alias{overlapsAny,ContactMatrix,GInteractions-method}
 \alias{overlapsAny,ContactMatrix,InteractionSet-method}
 
 \title{Find overlaps between GRanges and a ContactMatrix}
 
 \description{
-Find overlaps between a set of linear intervals in a GRanges object, and the set of regions representing the rows or columns of a ContactMatrix.
+Find overlaps for the set of regions representing the rows or columns of a ContactMatrix.
 }
 
 \usage{
-\S4method{overlapsAny}{ContactMatrix,GRanges}(query, subject, maxgap=0L, minoverlap=1L,
+\S4method{overlapsAny}{ContactMatrix,Vector}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=TRUE)
+    ignore.strand=TRUE, ...)
 
-\S4method{overlapsAny}{ContactMatrix,GRangesList}(query, subject, maxgap=0L, minoverlap=1L,
+\S4method{overlapsAny}{ContactMatrix,GInteractions}(query, subject, maxgap=-1L, minoverlap=0L,
     type=c("any", "start", "end", "within", "equal"),
-    ignore.strand=TRUE, use.region="both")
+    ignore.strand=TRUE, ..., use.region="both")
 
-# The same call is used for the methods taking GRangesList, GInteractions and
-# InteractionSet objects as 'subject'. For brevity, these will not be listed.
+\S4method{overlapsAny}{ContactMatrix,InteractionSet}(query, subject, maxgap=-1L, minoverlap=0L,
+    type=c("any", "start", "end", "within", "equal"),
+    ignore.strand=TRUE, ..., use.region="both")
 }
 
 \arguments{
-\item{query}{A ContactMatrix object.}
+\item{query}{A \link{ContactMatrix} object.}
 
-\item{subject}{A GRanges, GRangesList, GInteractions or InteractionSet object.}
+\item{subject}{A \link[GenomicRanges]{GRanges}, \link[GenomicRanges]{GRangesList}, \link{GInteractions} or \link{InteractionSet} object.}
 
-\item{maxgap, minoverlap, type}{
-    See \code{?\link[GenomicRanges]{findOverlaps}} in the \pkg{GenomicRanges} package.
-}
-
-\item{ignore.strand}{
+\item{maxgap, minoverlap, type, ..., ignore.strand}{
     See \code{?\link[GenomicRanges]{findOverlaps}} in the \pkg{GenomicRanges} package.
 }
 
 \item{use.region}{
-    A string specifying how the interacting regions are to be matched to row/column regions.
+    A string specifying how the interacting regions are to be matched to row/column regions, see Details.
 }
 }
 
@@ -94,10 +90,3 @@ olap
 \author{
 Aaron Lun
 }
-
-\seealso{
-\code{\link{ContactMatrix-class}},
-\code{\link[GenomicRanges]{findOverlaps}}
-}
-
-

@@ -53,8 +53,7 @@ For the constructors, a GInteractions (or StrictGInteractions, or ReverseStrictG
 }
 
 \section{Description of the class}{
-The GInteractions class inherits from the Vector class and has access to all of its data members and methods 
-    (e.g, \code{metadata} and \code{elementMetadata} - see \code{\link{Vector-class}} for more details). 
+The GInteractions class inherits from the \link[S4Vectors]{Vector} class and has access to all of its data members and methods, e.g, \code{metadata} and \code{elementMetadata}.
 It also contains several additional slots:
 \describe{
 \item{\code{anchor1}:}{An integer vector specifying the index of the first interacting region.}
@@ -127,9 +126,8 @@ with contributions from Malcolm Perry and Liz Ing-Simmons.
 }
 
 \seealso{
-\code{\link{interaction-access}},
-\code{\link{interaction-subset}},
-\code{\link{interaction-compare}},
-\code{\link{Vector-class}}
+\code{?"\link{interaction-access}"},
+\code{?"\link{interaction-subset}"},
+\code{?"\link{interaction-compare}"}
 }
 

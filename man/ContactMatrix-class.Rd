@@ -48,9 +48,9 @@ For the constructors, a ContactMatrix object is returned.
 }
 
 \details{
-The ContactMatrix class inherits from the \code{\link[S4Vectors]{Annotated}} class, with several additional slots:
+The ContactMatrix class inherits from the \link[S4Vectors]{Annotated} class, with several additional slots:
 \describe{
-\item{\code{matrix}:}{A matrix-like object.}
+\item{\code{matrix}:}{A matrix or matrix-like object from, e.g., the \pkg{Matrix} or \pkg{DelayedArray} packages.}
 \item{\code{anchor1}:}{An integer vector specifying the index of the first interacting region.}
 \item{\code{anchor2}:}{An integer vector specifying the index of the second interacting region.}
 \item{\code{regions}:}{A sorted GRanges object containing the coordinates of all interacting regions.}
@@ -122,10 +122,8 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{ContactMatrix-access}},
-\code{\link{ContactMatrix-subset}},
-\code{\link{ContactMatrix-sort}},
-\code{\link{Annotated-class}},
-\code{\link{Matrix-class}}
+\code{?"\link{ContactMatrix-access}"},
+\code{?"\link{ContactMatrix-subset}"},
+\code{?"\link{ContactMatrix-sort}"}
 }
 

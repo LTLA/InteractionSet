@@ -22,7 +22,7 @@ Inflate a GInteractions or InteractionSet into a ContactMatrix, or deflate a Con
 
 \arguments{
 \item{x}{
-    A GInteractions or InteractionSet object for \code{inflate}, or a ContactMatrix object for \code{deflate}.
+    A \link{GInteractions} or \link{InteractionSet} object for \code{inflate}, or a \link{ContactMatrix} object for \code{deflate}.
 }
 
 \item{rows, columns}{
@@ -101,7 +101,7 @@ For the InteractionSet \code{inflate} method, entries in the matrix are filled i
 For more complex \code{x}, values from different assays and samples can be extracted using the \code{assay} and \code{sample} arguments.
 Note that if \code{fill} is specified, it will override any extraction of values from the assays.
 
-If \code{sparse=TRUE}, \code{inflate} will return a ContactMatrix containing a \linkS4class{sparseMatrix} in the \code{matrix} slot.
+If \code{sparse=TRUE}, \code{inflate} will return a ContactMatrix containing a \link[Matrix]{sparseMatrix} in the \code{matrix} slot.
 Here, entries without a corresponding interaction in \code{x} are set to zero, not \code{NA}.
 See below for some considerations when interpreting zeroes and \code{NA}s in contact matrices.
 
@@ -181,11 +181,4 @@ deflate(y, collapse=FALSE)
 
 \author{
 Aaron Lun
-}
-
-\seealso{
-\code{\link{InteractionSet-class}},
-\code{\link{GInteractions-class}},
-\code{\link{ContactMatrix-class}},
-\code{\link{sparseMatrix-class}}
 }

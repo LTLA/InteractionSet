@@ -15,7 +15,7 @@
 }
 
 \arguments{
-\item{x}{A GInteractions or InteractionSet object.}
+\item{x}{A \link{GInteractions} or \link{InteractionSet} object.}
 
 \item{f}{
 A factor or vector of length equal to that of \code{x}, indicating the group to which each pairwise interaction belongs.
@@ -48,11 +48,6 @@ Alternatively, users can specify a StrictGInteractions object as an input into \
 % This means that you must increase the size of one of your sides of your bounding box.
 }
 
-\seealso{
-\code{\link{GInteractions-class}},
-\code{\link{InteractionSet-class}}
-}
-
 \author{
 Aaron Lun
 }
@@ -74,5 +69,3 @@ try(out <- boundingBox(gi))
 in.A <- f=="chrA.chrA"
 out <- boundingBox(gi[in.A])
 }
-
-

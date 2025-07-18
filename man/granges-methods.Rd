@@ -55,7 +55,7 @@
 }
 
 \arguments{
-\item{x}{A GInteractions, InteractionSet or ContactMatrix object.}
+\item{x}{A \link{GInteractions}, \link{InteractionSet} or \link{ContactMatrix} object.}
 \item{shift, start, end, width, fix, both}{Further interaction-specific arguments to pass to the relevant GenomicRanges methods, see details.}
 \item{use.names, ignore.strand, ...}{Further overall arguments to pass to the relevant GenomicRanges methods.}
 }
@@ -80,15 +80,6 @@ For ContactMatrix objects, the method will return a list with the vectors \code{
 
 \value{
 Depending on the method, an object of the same class as \code{x}, or information regarding the genomic regions -- see Details.
-}
-
-\seealso{
-\code{\link{trim,GenomicRanges-method}},
-\code{\link{resize,GenomicRanges-method}},
-\code{\link{narrow,GenomicRanges-method}},
-\code{\link{shift,GenomicRanges-method}},
-\code{\link{flank,GenomicRanges-method}},
-\code{\link{width,IRanges-method}}
 }
 
 \examples{
@@ -118,3 +109,11 @@ width(x)
 Aaron Lun, based on suggestions from Liz Ing-Simmons.
 }
 
+\seealso{
+\code{?"\link[GenomicRanges]{trim,GenomicRanges-method}"},
+\code{?"\link[GenomicRanges]{resize,GenomicRanges-method}"},
+\code{?"\link[GenomicRanges]{narrow,GenomicRanges-method}"},
+\code{?"\link[GenomicRanges]{shift,GenomicRanges-method}"},
+\code{?"\link[GenomicRanges]{flank,GenomicRanges-method}"},
+\code{?"\link[GenomicRanges]{width,GenomicRanges-method}"}
+}

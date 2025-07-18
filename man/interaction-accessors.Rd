@@ -142,13 +142,14 @@ Methods to get and set fields in an InteractionSet or GInteractions object.
 }
 
 \arguments{
-\item{x}{An InteractionSet or GInteractions object.}
+\item{x}{An \link{InteractionSet} or \link{GInteractions} object.}
 
 \item{type}{a string specifying which anchors are to be extracted or replaced.}
 
-\item{id}{a scalar logical indicating whether indices or GRanges should be returned.}
+\item{id}{a scalar logical indicating whether indices or GRanges should be returned.
+If \code{FALSE}, \link[GenomicRanges]{GRanges} are returned instead.}
 
-\item{new2old, pruning.mode}{Additional arguments to pass to \code{\link{seqinfo,GRanges-method}}.}
+\item{new2old, pruning.mode}{Additional arguments to pass to \code{\link[Seqinfo]{seqinfo}}.}
 
 \item{name}{a string indicating the field of \code{mcols} to be accessed or modified for a GInteractions object.}
 
@@ -211,7 +212,7 @@ R uses a copy-on-write memory management scheme, so only one copy of the GRanges
 }
 
 \section{Other methods for GInteractions}{
-For access and setting of all other slots, see \code{\link{Vector-class}} for details on the appropriate methods.
+For access and setting of all other slots, see \link[S4Vectors]{Vector} for details on the appropriate methods.
 This includes \code{mcols} or \code{metadata}, to store interactions-specific or experiment-wide metadata, respectively.
 The \code{length} method will return the number of interactions stored in \code{x}.
 
@@ -219,8 +220,8 @@ The \code{show} method will print out the class, the number of pairwise interact
 The number and names of the various metadata fields will also be printed.
 The \code{as.data.frame} method will return a data.frame object containing the coordinates for the two anchor regions as well as any element-wise metadata.
 
-The \code{seqinfo} method will return the sequence information of the GRanges in the \code{regions} slot.
-This can be replaced with the \code{seqinfo<-} method -- see \code{?\link{Seqinfo}} for more details.
+The \code{seqinfo} method will return the sequence information of the \link[GenomicRanges]{GRanges} in the \code{regions} slot.
+This can be replaced with the \code{seqinfo<-} method. 
 }
 
 \section{Details for InteractionSet}{
@@ -231,7 +232,7 @@ This slot can also be set by supplying a valid GInteractions object in \code{int
 The \code{show} method will print information equivalent to that done for a SummarizedExperiment object.
 An additional line is added indicating the number of regions in the \code{regions} slot of the object.
 
-For access and setting of all other slots, see \code{\link{SummarizedExperiment-class}} for details on the appropriate methods.
+For access and setting of all other slots, see the documentation for the \link[SummarizedExperiment]{SummarizedExperiment} class.
 This includes \code{assays}, \code{colData}, \code{mcols} or \code{metadata}, which can all be applied to InteractionSet objects.
 }
 
@@ -342,11 +343,4 @@ names(interactions(iset))
 
 \author{
 Aaron Lun
-}
-
-\seealso{
-\code{\link{GInteractions-class}},
-\code{\link{InteractionSet-class}},
-\code{\link{Vector-class}},
-\code{\link{SummarizedExperiment-class}}
 }

@@ -17,14 +17,16 @@ Convert interactions in two-dimensional space to one-dimensional ranges on the l
 
 \S4method{linearize}{GInteractions,GRanges}(x, ref, ..., internal=TRUE)
 
-# Equivalent calls for InteractionSet objects.
+\S4method{linearize}{InteractionSet,numeric}(x, ref, internal=TRUE)
+
+\S4method{linearize}{InteractionSet,GRanges}(x, ref, ..., internal=TRUE)
 }
 
 \arguments{
-\item{x}{A GInteractions or InteractionSet object}
+\item{x}{A \link{GInteractions} or \link{InteractionSet} object.}
 
 \item{ref}{ 
-    A numeric vector or a GRanges object, specifying the reference region(s) to use for linearization.
+    A numeric vector or a \link[GenomicRanges]{GRanges} object, specifying the reference region(s) to use for linearization.
     If numeric, the entries should be indices pointing to a genomic interval in \code{regions(x)}.
 }
 
@@ -77,5 +79,3 @@ linearize(iset, regions(iset)[1], type="equal")
 linearize(iset, regions(iset)[10], type="equal")
 linearize(iset, regions(iset)[20], type="equal")
 }
-
-

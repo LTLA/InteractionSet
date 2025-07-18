@@ -26,7 +26,7 @@ Methods to subset or combine InteractionSet or GInteractions objects.
 }
 
 \arguments{
-\item{x}{A GInteractions or InteractionSet object.}
+\item{x}{A \link{GInteractions} or \link{InteractionSet} object.}
 
 \item{i, j}{
     A vector of logical or integer subscripts.
@@ -49,7 +49,7 @@ A subsetted object of the same class as \code{x}.
 }
 
 \section{Details for GInteractions}{
-Subsetting operations are not explicitly listed above as they inherit from the \code{\link{Vector}} class.
+Subsetting operations are not explicitly listed above as they inherit from the \link[S4Vectors]{Vector} class.
 They will return a GInteractions object containing the specified interactions.
 Values of the \code{anchor1} and \code{anchor2} slots will be appropriately subsetted in the returned object, along with any metadata in \code{mcols}.
 However, note that the value of \code{regions} will not be modified by subsetting.
@@ -109,10 +109,3 @@ out[[1]]
 \author{
 Aaron Lun
 }
-
-\seealso{
-\code{\link{InteractionSet-class}}
-\code{\link{GInteractions-class}}
-}
-
-

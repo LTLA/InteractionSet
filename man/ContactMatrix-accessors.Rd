@@ -26,6 +26,9 @@
 \alias{dimnames<-,ContactMatrix,ANY-method}
 \alias{length,ContactMatrix-method}
 
+\alias{seqinfo,ContactMatrix-method}
+\alias{seqinfo<-,ContactMatrix-method}
+
 \title{ContactMatrix accessors}
 
 \description{
@@ -52,14 +55,19 @@ Methods to get and set fields in an ContactMatrix object.
 \S4method{dimnames}{ContactMatrix}(x)
 \S4method{dimnames}{ContactMatrix}(x) <- value
 \S4method{length}{ContactMatrix}(x)
+
+\S4method{seqinfo}{ContactMatrix}(x)
+\S4method{seqinfo}{ContactMatrix}(x, new2old = NULL,
+    pruning.mode = c("error", "coarse", "fine", "tidy")) <- value
 }
 
 \arguments{
-\item{x}{A ContactMatrix object.}
+\item{x}{A \link{ContactMatrix} object.}
 
-\item{type}{a string specifying which anchors are to be extracted or replaced.}
+\item{type}{A string specifying which anchors are to be extracted or replaced.}
 
-\item{id}{a scalar logical indicating whether indices or GRanges should be returned.}
+\item{id}{A scalar logical indicating whether indices should be returned.
+If \code{FALSE}, \link[GenomicRanges]{GRanges} are returned instead.}
 
 \item{value}{
     For \code{anchorIds<-}, a list of two integer vectors when \code{type="both"}.
@@ -74,7 +82,11 @@ Methods to get and set fields in an ContactMatrix object.
     
     For \code{dimnames<-}, a list of two character vectors corresponding to the row and column names, respectively.
     These can also be passed separately via \code{rownames<-} and \code{colnames<-}.
+
+    For \code{seqinfo<-}, a \link[Seqinfo]{Seqinfo} object containing the sequence information.
 }
+
+\item{new2old, pruning.mode}{See \code{?"\link[Seqinfo]{seqinfo<-}"} for details.}
 }
 
 \details{
@@ -109,8 +121,11 @@ The \code{dim} method will return a vector of length 2, containing the dimension
 The \code{dimnames} method will return a list of length 2, containing the row and column names of \code{matrix} (these can be modified with the \code{dimnames<-} method).
 The \code{length} method will return an integer scalar corresponding to the total number of entries in the \code{matrix} slot.
 
-As the ContactMatrix class inherits from the \code{\link{Annotated}} class, additional metadata can be stored in the \code{metadata} slot.
-This can be accessed or modified with \code{\link{metadata,Annotated-method}}.
+The \code{seqinfo} method will return the sequence information of the \link[GenomicRanges]{GRanges} in the \code{regions} slot.
+This can be replaced with the \code{seqinfo<-} method. 
+
+As the ContactMatrix class inherits from the \link[S4Vectors]{Annotated} class, additional metadata can be stored in the \code{metadata} slot.
+This can be accessed or modified with \code{\link[S4Vectors]{metadata<-}}.
 }
 
 \value{
@@ -165,8 +180,4 @@ metadata(x)
 
 \author{
 Aaron Lun
-}
-
-\seealso{
-\code{\link{ContactMatrix-class}}
 }

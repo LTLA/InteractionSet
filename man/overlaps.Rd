@@ -83,7 +83,7 @@ Find overlaps between interactions and linear intervals, between interactions an
 
 \arguments{
 \item{query, subject}{
-    A Vector, GInteractions or InteractionSet object, depending on the specified method.
+    A \link[S4Vectors]{Vector}, \link{GInteractions} or \link{InteractionSet} object, depending on the specified method.
     At least one of these must be a GInteractions or InteractionSet object.
     Also, \code{subject} can be missing if \code{query} is a GInteractions or InteractionSet object.
 }
@@ -240,9 +240,6 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{InteractionSet-class}},
 \code{\link[GenomicRanges]{findOverlaps}},
 \code{\link{linkOverlaps}}
 }
-
-

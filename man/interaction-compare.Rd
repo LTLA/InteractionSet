@@ -55,12 +55,12 @@ Methods to order, compare and de-duplicate GInteractions or InteractionSet objec
 
 \arguments{
 \item{...}{
-    For \code{order}, one or more InteractionSet or GInteractions objects with the same number of rows.
+    For \code{order}, one or more \link{InteractionSet} or \link{GInteractions} objects with the same number of rows.
     Otherwise, ignored in all other methods.
 }
 
 \item{x}{
-    An InteractionSet or GInteractions object.
+    An \link{InteractionSet} or \link{GInteractions} object.
     For \code{pcompare}, a GInteractions object only.
 }
 
@@ -210,9 +210,6 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{GInteractions-class}},
-\code{\link{InteractionSet-class}},
 \code{\link[base]{match}},
 \code{\link[S4Vectors]{pcompare}}
 }
-

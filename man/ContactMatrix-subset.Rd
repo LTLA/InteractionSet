@@ -30,12 +30,12 @@ Methods to subset or combine ContactMatrix objects.
 }
 
 \arguments{
-\item{x}{A ContactMatrix object.}
+\item{x}{A \link{ContactMatrix} object.}
 
 \item{i, j}{A vector of subscripts, indicating the rows and columns to be subsetted for \code{i} and \code{j}, respectively.}
 
 \item{...}{    
-    For \code{cbind}, \code{rbind} and \code{c}, \code{...} contains ContactMatrix objects to be combined.
+    For \code{cbind}, \code{rbind} and \code{c}, \code{...} contains \link{ContactMatrix} objects to be combined.
     Otherwise, this argument is ignored during subsetting.
 }
 
@@ -88,9 +88,3 @@ rbind(x, x)
 \author{
 Aaron Lun
 }
-
-\seealso{
-\code{\link{ContactMatrix-class}}
-}
-
-

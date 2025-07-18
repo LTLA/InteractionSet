@@ -30,7 +30,7 @@ Each InteractionSet also contains one or more assays, intended to hold experimen
     A GInteractions object of length equal to the number of rows in \code{assays}.
 }
 
-\item{...}{Other arguments to be passed to \code{\link{SummarizedExperiment}}.}
+\item{...}{Other arguments to be passed to the \code{\link[SummarizedExperiment]{SummarizedExperiment}} constructor.}
 }
 
 \value{
@@ -38,8 +38,7 @@ For the constructors, an InteractionSet object is returned.
 }
 
 \details{
-The InteractionSet class inherits from the SummarizedExperiment class and has access to all of its data members and methods 
-    (see \code{?\link{SummarizedExperiment-class}} for more details). 
+The InteractionSet class inherits from the \link[SummarizedExperiment]{SummarizedExperiment} class and has access to all of its data members and methods.
 It also contains an additional \code{interactions} slot which holds a GInteractions object (or an object from any derived classes, e.g., StrictGInteractions).
 Each row of the InteractionSet object corresponds to a pairwise interaction between two genomic loci in \code{interactions}.
 
@@ -70,10 +69,8 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{SummarizedExperiment}},
-\code{\link{interaction-access}},
-\code{\link{interaction-subset}},
-\code{\link{interaction-compare}},
-\code{\link{SummarizedExperiment-class}}
+\code{?"\link{interaction-access}"},
+\code{?"\link{interaction-subset}"},
+\code{?"\link{interaction-compare}"}
 }
 

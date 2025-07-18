@@ -19,7 +19,7 @@ Methods to combine InteractionSet or GInteractions objects.
 }
 
 \arguments{
-\item{x}{A GInteractions or InteractionSet object.}
+\item{x}{A \link{GInteractions} or \link{InteractionSet} object.}
 
 \item{...}{  
     For \code{rbind} and \code{c}, \code{...} contains GInteractions or InteractionSet objects to be combined row-wise.
@@ -52,11 +52,11 @@ If GInteractions objects of different strictness (i.e., StrictGInteractions and 
 \section{Details for InteractionSet}{
 \code{cbind} will combine objects with the same interactions but different samples.
 Errors will occur if the interactions are not identical between objects (i.e., must have same values in the \code{interactions} slots).
-Additional restrictions apply on the column and assay names - see \code{\link{cbind,SummarizedExperiment-method}} for details.
+Additional restrictions apply on the column and assay names - see \code{\link[SummarizedExperiment]{cbind,SummarizedExperiment-method}} for details.
 
 \code{rbind} will combine objects with the same samples but different interactions.
 In this case, the interactions need not be identical, and will be concatenated using the methods described above for GInteractions objects.
-Again, additional restrictions apply - see \code{\link{rbind,SummarizedExperiment-method}} for details.
+Again, additional restrictions apply - see \code{\link[SummarizedExperiment]{rbind,SummarizedExperiment-method}} for details.
 }
 
 \examples{
@@ -82,9 +82,3 @@ rbind(iset, new.iset)
 \author{
 Aaron Lun
 }
-
-\seealso{
-\code{\link{InteractionSet-class}}
-\code{\link{GInteractions-class}}
-}
-

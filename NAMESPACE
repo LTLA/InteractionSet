@@ -13,7 +13,7 @@ exportMethods(
     "regions<-", "replaceRegions<-",  "appendRegions<-", "anchorIds<-",
     seqinfo, "seqinfo<-",
     pairs, 
-    findOverlaps, countOverlaps,
+    findOverlaps, countOverlaps, overlapsAny,
     InteractionSet, 
     interactions,
     "interactions<-",

@@ -13,15 +13,15 @@ Represent interactions in a GInteractions or Interaction object as a Pairs, Self
 \usage{
 \S4method{pairs}{GInteractions}(x, id=FALSE, as.grlist=FALSE)
 
-# Equivalent call for InteractionSet to above.
+\S4method{pairs}{InteractionSet}(x, id=FALSE, as.grlist=FALSE)
 
 makeGInteractionsFromGRangesPairs(x)
 }
 
 \arguments{
 \item{x}{
-For \code{pairs}, a GInteractions or InteractionSet object.
-For \code{makeGInteractionsFromGRangesPairs}, a Pairs object containing two parallel GRanges.
+For \code{pairs}, a \link{GInteractions} or \link{InteractionSet} object.
+For \code{makeGInteractionsFromGRangesPairs}, a \link[S4Vectors]{Pairs} object containing two parallel \link[GenomicRanges]{GRanges}.
 }
 
 \item{id}{A logical scalar specifying whether indices should be returned instead of regions.}
@@ -31,7 +31,7 @@ For \code{makeGInteractionsFromGRangesPairs}, a Pairs object containing two para
 
 \value{
 For \code{pairs}, if \code{id=TRUE}, a SelfHits object is returned. 
-Otherwise, if \code{as.grlist=TRUE}, a GRangesList object is returned.
+Otherwise, if \code{as.grlist=TRUE}, a \link[GenomicRanges]{GRangesList} object is returned.
 Otherwise, a Pairs object is returned.
 
 For \code{makeGInteractionsFromGRangesPairs}, a GInteractions object is returned.
@@ -69,11 +69,3 @@ pairs(iset, as.grlist=TRUE)
 \author{
 Aaron Lun
 }
-
-\seealso{
-\code{\link{GInteractions}},
-\code{\link{Pairs}},
-\code{\link{SelfHits}},
-\code{\link{GRangesList}}
-}
-

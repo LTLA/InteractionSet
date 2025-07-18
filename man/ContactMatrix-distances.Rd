@@ -17,11 +17,11 @@ Methods to compute linear distances between pairs of interacting regions in a Co
 }
 
 \arguments{
-\item{x}{A ContactMatrix object.}
+\item{x}{A \link{ContactMatrix} object.}
 
 \item{type}{
     A character string specifying the type of distance to compute.
-    See \code{?\link{pairdist,InteractionSet-method}} for possible values.
+    See \code{?"\link{pairdist,GInteractions-method}"} for possible values.
 }
 }
 
@@ -51,9 +51,3 @@ intrachr(x)
 \author{
 Aaron Lun
 }
-
-\seealso{
-\code{\link{ContactMatrix-class}},
-\code{\link{pairdist,InteractionSet-method}}
-}
-

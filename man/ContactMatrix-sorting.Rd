@@ -22,11 +22,11 @@ Also, methods to remove duplicate rows or columns in each ContactMatrix.
 
 \arguments{
 \item{...}{
-    For \code{sort,ContactMatrix-method}, one or more ContactMatrix objects with the same dimensions.
+    For \code{sort}, one or more \link{ContactMatrix} objects with the same dimensions.
     Otherwise, ignored in all other methods.
 }
 
-\item{x}{A ContactMatrix object.}
+\item{x}{A \link{ContactMatrix} object.}
 
 \item{na.last}{
     A logical scalar indicating whether \code{NA} values should be ordered last.
@@ -101,8 +101,3 @@ stopifnot(all.equal(unique(x), unique(rbind(x, x))))
 \author{
 Aaron Lun
 }
-
-\seealso{
-\code{\link{ContactMatrix-class}}
-}
-

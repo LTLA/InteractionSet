@@ -2,11 +2,12 @@
 \alias{updateObject}
 \alias{updateObject,GInteractions-method}
 \title{Update a GInteractions object}
+\description{Update an old GInteractions object to the latest format.}
 \usage{
 \S4method{updateObject}{GInteractions}(object, ..., verbose = FALSE)
 }
 \arguments{
-\item{object}{A old \linkS4class{GInteractions} object.}
+\item{object}{A old \link{GInteractions} object.}
 
 \item{...}{Additional arguments that are ignored.}
 
