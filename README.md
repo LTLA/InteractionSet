@@ -1,4 +1,4 @@
-# Managing Python environments within Bioconductor
+# S4 classes for genomic interaction data
 
 |Environment|Status|
 |---|---|
